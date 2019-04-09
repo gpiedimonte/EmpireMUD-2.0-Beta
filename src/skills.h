@@ -81,6 +81,7 @@ extern bool skill_check(char_data *ch, any_vnum ability, int difficulty);
 #define SKILL_SURVIVAL  5
 #define SKILL_TRADE  6
 #define SKILL_VAMPIRE  7
+#define SKILL_LYCANTHROPE 8
 
 
 // for ability definitions
@@ -754,11 +755,11 @@ static inline int get_skill_resets(char_data *ch, any_vnum skill) {
 */
 static inline bool has_ability_in_set(char_data *ch, any_vnum abil_id, int skill_set) {
 	struct player_ability_data *data;
-	
+
 	if (IS_NPC(ch)) {
 		return FALSE;
 	}
-	
+
 	data = get_ability_data(ch, abil_id, 0);
 	return data && data->purchased[skill_set];
 }
@@ -775,7 +776,7 @@ static inline bool has_ability(char_data *ch, any_vnum abil_id) {
 	if (IS_NPC(ch)) {
 		return FALSE;
 	}
-	
+
 	// GET_CURRENT_SKILL_SET(ch) not available here
 	return has_ability_in_set(ch, abil_id, GET_CURRENT_SKILL_SET(ch));
 }

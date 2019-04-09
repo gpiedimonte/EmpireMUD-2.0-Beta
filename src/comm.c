@@ -178,13 +178,13 @@ void clear_last_act_message(descriptor_data *desc) {
 */
 bool desc_num_in_use(int num) {
 	descriptor_data *desc;
-	
+
 	for (desc = descriptor_list; desc; desc = desc->next) {
 		if (desc->desc_num == num) {
 			return TRUE;
 		}
 	}
-	
+
 	// clear
 	return FALSE;
 }
@@ -212,14 +212,14 @@ void msdp_update_room(char_data *ch) {
 	extern struct instance_data *find_instance_by_room(room_data *room, bool check_homeroom);
 	extern char *get_room_name(room_data *room, bool color);
 	extern const char *alt_dirs[];
-	
+
 	char buf[MAX_STRING_LENGTH], area_name[128], exits[256];
 	struct empire_city_data *city;
 	struct instance_data *inst;
 	size_t buf_size, ex_size;
 	descriptor_data *desc;
 	int isle_id;
-	
+
 	// no work
 	if (!ch || !(desc = ch->desc)) {
 		return;
@@ -239,12 +239,12 @@ void msdp_update_room(char_data *ch) {
 		snprintf(area_name, sizeof(area_name), "Unknown");
 	}
 	MSDPSetString(desc, eMSDP_AREA_NAME, area_name);
-	
+
 	// room var: table
 	buf_size = snprintf(buf, sizeof(buf), "%cVNUM%c%d", (char)MSDP_VAR, (char)MSDP_VAL, IS_IMMORTAL(ch) ? GET_ROOM_VNUM(IN_ROOM(ch)) : 0);
 	buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%cNAME%c%s", (char)MSDP_VAR, (char)MSDP_VAL, get_room_name(IN_ROOM(ch), FALSE));
 	buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%cAREA%c%s", (char)MSDP_VAR, (char)MSDP_VAL, area_name);
-	
+
 	buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%cCOORDS%c%c", (char)MSDP_VAR, (char)MSDP_VAL, (char)MSDP_TABLE_OPEN);
 	if (has_ability(ch, ABIL_NAVIGATION) && !RMT_FLAGGED(IN_ROOM(ch), RMT_NO_LOCATION)) {
 		buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%cX%c%d", (char)MSDP_VAR, (char)MSDP_VAL, X_COORD(IN_ROOM(ch)));
@@ -270,7 +270,7 @@ void msdp_update_room(char_data *ch) {
 	}
 	buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%s%c", exits, (char)MSDP_TABLE_CLOSE);
 	MSDPSetTable(desc, eMSDP_ROOM, buf);
-	
+
 	// simple room data
 	MSDPSetNumber(desc, eMSDP_ROOM_VNUM, IS_IMMORTAL(ch) ? GET_ROOM_VNUM(IN_ROOM(ch)) : 0);
 	MSDPSetString(desc, eMSDP_ROOM_NAME, get_room_name(IN_ROOM(ch), FALSE));
@@ -298,7 +298,7 @@ static void msdp_update(void) {
 	extern const char *damage_types[];
 	extern const double hit_per_dex;
 	extern const char *seasons[];
-	
+
 	struct player_skill_data *skill, *next_skill;
 	struct over_time_effect_type *dot;
 	char buf[MAX_STRING_LENGTH];
@@ -313,7 +313,7 @@ static void msdp_update(void) {
 	for (d = descriptor_list; d; d = d->next) {
 		if ((ch = d->character) && !IS_NPC(ch) && STATE(d) == CON_PLAYING) {
 			++PlayerCount;
-			
+
 			// TODO: Most of this could be moved to set only when it is changed
 
 			MSDPSetString(d, eMSDP_ACCOUNT_NAME, GET_NAME(ch));
@@ -331,7 +331,7 @@ static void msdp_update(void) {
 			MSDPSetNumber(d, eMSDP_BLOOD, GET_BLOOD(ch));
 			MSDPSetNumber(d, eMSDP_BLOOD_MAX, GET_MAX_BLOOD(ch));
 			MSDPSetNumber(d, eMSDP_BLOOD_UPKEEP, MAX(0, GET_BLOOD_UPKEEP(ch)));
-			
+
 			// affects
 			*buf = '\0';
 			buf_size = 0;
@@ -339,25 +339,25 @@ static void msdp_update(void) {
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%c%s%c%d", (char)MSDP_VAR, affect_types[aff->type], (char)MSDP_VAL, (aff->duration == UNLIMITED ? -1 : (aff->duration * SECS_PER_REAL_UPDATE)));
 			}
 			MSDPSetTable(d, eMSDP_AFFECTS, buf);
-			
+
 			// dots
 			*buf = '\0';
 			buf_size = 0;
 			for (dot = ch->over_time_effects; dot; dot = dot->next) {
 				// each dot has a sub-table
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%c%s%c%c", (char)MSDP_VAR, affect_types[dot->type], (char)MSDP_VAL, (char)MSDP_TABLE_OPEN);
-				
-				
+
+
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%cDURATION%c%d", (char)MSDP_VAR, (char)MSDP_VAL, (dot->duration == UNLIMITED ? -1 : (dot->duration * SECS_PER_REAL_UPDATE)));
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%cTYPE%c%s", (char)MSDP_VAR, (char)MSDP_VAL, damage_types[dot->damage_type]);
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%cDAMAGE%c%d", (char)MSDP_VAR, (char)MSDP_VAL, dot->damage * dot->stack);
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%cSTACKS%c%d", (char)MSDP_VAR, (char)MSDP_VAL, dot->stack);
-				
+
 				// end table
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%c", (char)MSDP_TABLE_CLOSE);
 			}
 			MSDPSetTable(d, eMSDP_DOTS, buf);
-			
+
 			// cooldowns
 			*buf = '\0';
 			buf_size = 0;
@@ -367,7 +367,7 @@ static void msdp_update(void) {
 				}
 			}
 			MSDPSetTable(d, eMSDP_COOLDOWNS, buf);
-			
+
 			MSDPSetNumber(d, eMSDP_LEVEL, get_approximate_level(ch));
 			MSDPSetNumber(d, eMSDP_SKILL_LEVEL, IS_NPC(ch) ? 0 : GET_SKILL_LEVEL(ch));
 			MSDPSetNumber(d, eMSDP_GEAR_LEVEL, IS_NPC(ch) ? 0 : GET_GEAR_LEVEL(ch));
@@ -375,18 +375,18 @@ static void msdp_update(void) {
 
 			snprintf(buf, sizeof(buf), "%s", SHOW_CLASS_NAME(ch));
 			MSDPSetString(d, eMSDP_CLASS, buf);
-			
+
 			// skills
 			*buf = '\0';
 			buf_size = 0;
 			HASH_ITER(hh, GET_SKILL_HASH(ch), skill, next_skill) {
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%c%s%c%c", (char)MSDP_VAR, SKILL_NAME(skill->ptr), (char)MSDP_VAL, (char)MSDP_TABLE_OPEN);
-				
+
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%cLEVEL%c%d", (char)MSDP_VAR, (char)MSDP_VAL, skill->level);
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%cEXP%c%.2f", (char)MSDP_VAR, (char)MSDP_VAL, skill->exp);
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%cRESETS%c%d", (char)MSDP_VAR, (char)MSDP_VAL, skill->resets);
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%cNOSKILL%c%d", (char)MSDP_VAR, (char)MSDP_VAL, skill->noskill ? 1 : 0);
-				
+
 				// end table
 				buf_size += snprintf(buf + buf_size, sizeof(buf) - buf_size, "%c", (char)MSDP_TABLE_CLOSE);
 			}
@@ -396,7 +396,7 @@ static void msdp_update(void) {
 			MSDPSetNumber(d, eMSDP_BONUS_EXP, IS_NPC(ch) ? 0 : GET_DAILY_BONUS_EXPERIENCE(ch));
 			MSDPSetNumber(d, eMSDP_INVENTORY, IS_CARRYING_N(ch));
 			MSDPSetNumber(d, eMSDP_INVENTORY_MAX, CAN_CARRY_N(ch));
-			
+
 			MSDPSetNumber(d, eMSDP_STR, GET_STRENGTH(ch));
 			MSDPSetNumber(d, eMSDP_DEX, GET_DEXTERITY(ch));
 			MSDPSetNumber(d, eMSDP_CHA, GET_CHARISMA(ch));
@@ -409,7 +409,7 @@ static void msdp_update(void) {
 			MSDPSetNumber(d, eMSDP_GRT_PERM, GET_REAL_ATT(ch, GREATNESS));
 			MSDPSetNumber(d, eMSDP_INT_PERM, GET_REAL_ATT(ch, INTELLIGENCE));
 			MSDPSetNumber(d, eMSDP_WIT_PERM, GET_REAL_ATT(ch, WITS));
-			
+
 			MSDPSetNumber(d, eMSDP_BLOCK, get_block_rating(ch, FALSE));
 			MSDPSetNumber(d, eMSDP_DODGE, get_dodge_modifier(ch, NULL, FALSE) - (hit_per_dex * GET_DEXTERITY(ch)));	// same change made to it in score
 			MSDPSetNumber(d, eMSDP_TO_HIT, get_to_hit(ch, NULL, FALSE, FALSE) - (hit_per_dex * GET_DEXTERITY(ch)));	// same change as in score
@@ -420,7 +420,7 @@ static void msdp_update(void) {
 			MSDPSetNumber(d, eMSDP_BONUS_PHYSICAL, GET_BONUS_PHYSICAL(ch));
 			MSDPSetNumber(d, eMSDP_BONUS_MAGICAL, GET_BONUS_MAGICAL(ch));
 			MSDPSetNumber(d, eMSDP_BONUS_HEALING, total_bonus_healing(ch));
-			
+
 			// empire
 			if (GET_LOYALTY(ch) && !IS_NPC(ch)) {
 				MSDPSetString(d, eMSDP_EMPIRE_NAME, EMPIRE_NAME(GET_LOYALTY(ch)));
@@ -472,10 +472,10 @@ static void msdp_update(void) {
 				MSDPSetNumber(d, eMSDP_OPPONENT_FOCUS_HEALTH, 0);
 				MSDPSetNumber(d, eMSDP_OPPONENT_FOCUS_HEALTH_MAX, 0);
 			}
-			
+
 			MSDPSetNumber(d, eMSDP_WORLD_TIME, time_info.hours);
 			MSDPSetString(d, eMSDP_WORLD_SEASON, seasons[pick_season(IN_ROOM(ch))]);
-			
+
 			// done -- send it
 			MSDPUpdate(d);
 		}
@@ -595,11 +595,11 @@ char *strip_telnet_codes(const char *str) {
 	const char *iter;
 	char *pos;
 	int off;
-	
+
 	pos = output;
 	space_left = MAX_STRING_LENGTH - 1;
 	off = 0;
-	
+
 	for (iter = str; *iter && space_left > 0; ++iter) {
 		if (*iter == (char)IAC && *(iter+1) == (char)SB) {
 			++off;	// stop copying
@@ -611,7 +611,7 @@ char *strip_telnet_codes(const char *str) {
 			++iter;
 			continue;
 		}
-		
+
 		// copy?
 		if (off <= 0) {
 			*(pos++) = *iter;
@@ -619,7 +619,7 @@ char *strip_telnet_codes(const char *str) {
 		}
 	}
 	*pos = '\0';	// terminate here
-	
+
 	return output;
 }
 
@@ -680,7 +680,7 @@ void timediff(struct timeval *rslt, struct timeval *a, struct timeval *b) {
 bool check_reboot_confirms(void) {
 	descriptor_data *desc;
 	bool found = FALSE;
-	
+
 	// check for unconfirmed folks
 	for (desc = descriptor_list; desc && !found; desc = desc->next) {
 		if (STATE(desc) != CON_PLAYING) {
@@ -693,7 +693,7 @@ bool check_reboot_confirms(void) {
 			found = TRUE;
 		}
 	}
-	
+
 	return !found;
 }
 
@@ -704,12 +704,12 @@ bool check_reboot_confirms(void) {
 void perform_reboot(void) {
 	extern const char *reboot_strings[];
 	extern int num_of_reboot_strings;
-	
+
 	char buf[MAX_STRING_LENGTH], buf2[MAX_STRING_LENGTH], group_data[MAX_STRING_LENGTH];
 	descriptor_data *desc, *next_desc;
 	int gsize = 0;
 	FILE *fl = NULL;
-	
+
 	*group_data = '\0';
 
 	if (reboot_control.type == SCMD_REBOOT && !(fl = fopen(REBOOT_FILE, "w"))) {
@@ -732,7 +732,7 @@ void perform_reboot(void) {
 	for (desc = descriptor_list; desc; desc = next_desc) {
 		char_data *och = desc->character;
 		next_desc = desc->next;
-		
+
 		// people not in-game get trimmed
 		if (!och || STATE(desc) != CON_PLAYING) {
 			write_to_descriptor(desc->descriptor, buf);
@@ -742,21 +742,21 @@ void perform_reboot(void) {
 
 		if (reboot_control.type == SCMD_REBOOT && fl) {
 			fprintf(fl, "%d %s %s %s\n", desc->descriptor, GET_NAME(och), desc->host, CopyoverGet(desc));
-		
+
 			if (GROUP(och) && GROUP_LEADER(GROUP(och))) {
 				gsize += snprintf(group_data + gsize, sizeof(group_data) - gsize, "G %d %d\n", GET_IDNUM(och), GET_IDNUM(GROUP_LEADER(GROUP(och))));
 			}
 		}
-		
+
 		// send output
 		write_to_descriptor(desc->descriptor, buf);
 		if (reboot_control.type == SCMD_REBOOT) {
 			write_to_descriptor(desc->descriptor, reboot_strings[number(0, num_of_reboot_strings - 1)]);
 		}
-		
+
 		SAVE_CHAR(och);
 		extract_all_items(och);
-		
+
 		// extract is not actually necessary since we're rebooting, right?
 		// extract_char(och);
 	}
@@ -771,9 +771,9 @@ void perform_reboot(void) {
 	// If this is a reboot, restart the mud!
 	if (reboot_control.type == SCMD_REBOOT) {
 		log("Reboot: performing live reboot");
-		
+
 		chdir("..");
-				
+
 		// rotate logs -- note: you should also update the autorun script
 		system("fgrep \"ABUSE:\" syslog >> log/abuse");
 		system("fgrep \"BAN:\" syslog >> log/ban");
@@ -791,10 +791,10 @@ void perform_reboot(void) {
 		system("fgrep \"SCRIPT ERR:\" syslog >> log/scripterr");
 		system("cp syslog log/syslog.old");
 		system("echo 'Rebooting EmpireMUD...' > syslog");
-		
+
 		sprintf(buf, "%d", port);
 		sprintf(buf2, "-C%d", mother_desc);
-		
+
 		// TODO: should support more of the extra options we might have started up with
 		if (no_auto_deletes) {
 			execl("bin/empire", "empire", buf2, "-q", buf, (char *) NULL);
@@ -826,7 +826,7 @@ void perform_reboot(void) {
 				break;
 			}
 		}
-		
+
 		// done!
 		exit(0);
 	}
@@ -841,14 +841,14 @@ void update_reboot(void) {
 	extern const char *reboot_type[];
 	extern int wizlock_level;
 	extern char *wizlock_message;
-	
+
 	char buf[MAX_STRING_LENGTH];
-	
+
 	// neverboot
 	if (reboot_control.time < 0) {
 		return;
 	}
-	
+
 	// otherwise...
 	reboot_control.time -= 1;
 
@@ -856,14 +856,14 @@ void update_reboot(void) {
 		perform_reboot();
 		return;
 	}
-	
+
 	// wizlock last 5 minutes
 	if (reboot_control.time <= 5) {
 		wizlock_level = 1;	// newbie lock
 		sprintf(buf, "This mud is preparing to %s. The %s will happen in about %d minutes.", reboot_type[reboot_control.type], reboot_type[reboot_control.type], reboot_control.time);
 		wizlock_message = str_dup(buf);
 	}
-	
+
 	// alert everyone
 	if (reboot_control.time <= 5 || (reboot_control.time <= 15 && (reboot_control.time % 2))) {
 		syslog(SYS_SYSTEM, 0, FALSE, "The mud will %s in %d minute%s (type 'confirm' to %s faster)", reboot_type[reboot_control.type], reboot_control.time, PLURAL(reboot_control.time), reboot_type[reboot_control.type]);
@@ -910,16 +910,16 @@ void heartbeat(int heart_pulse) {
 
 	static int mins_since_crashsave = 0;
 	bool debug_log = FALSE;
-	
+
 	#define HEARTBEAT(x)  !(heart_pulse % ((x) * PASSES_PER_SEC))
-	
+
 	// TODO go through this, arrange it better, combine anything combinable
 
 	// only get a gain condition message on the hour
 	if (HEARTBEAT(SECS_PER_MUD_HOUR)) {
 		gain_cond_messsage = TRUE;
 	}
-	
+
 	event_process();
 
 	// this is meant to be slightly longer than the mobile_activity pulse, and is mentioned in help files
@@ -929,7 +929,7 @@ void heartbeat(int heart_pulse) {
 	}
 
 	if (HEARTBEAT(1)) {
-		update_actions();		
+		update_actions();
 		if (debug_log && HEARTBEAT(15)) { log("debug  3:\t%lld", microtime()); }
 		check_expired_cooldowns();	// descriptor list
 		if (debug_log && HEARTBEAT(15)) { log("debug  4:\t%lld", microtime()); }
@@ -939,7 +939,7 @@ void heartbeat(int heart_pulse) {
 		update_guard_towers();
 		if (debug_log && HEARTBEAT(15)) { log("debug  5:\t%lld", microtime()); }
 	}
-	
+
 	if (HEARTBEAT(30)) {
 		sanity_check();
 		if (debug_log && HEARTBEAT(15)) { log("debug  6:\t%lld", microtime()); }
@@ -957,7 +957,7 @@ void heartbeat(int heart_pulse) {
 	if (HEARTBEAT(30)) {
 		update_world();
 		if (debug_log && HEARTBEAT(15)) { log("debug  9:\t%lld", microtime()); }
-		
+
 		update_players_online_stats();
 		if (debug_log && HEARTBEAT(15)) { log("debug  9.5:\t%lld", microtime()); }
 	}
@@ -972,7 +972,7 @@ void heartbeat(int heart_pulse) {
 		frequent_combat(heart_pulse);
 		if (debug_log && HEARTBEAT(15)) { log("debug 11:\t%lld", microtime()); }
 	}
-	
+
 	if (HEARTBEAT(SECS_PER_MUD_HOUR)) {
 		point_update();
 		if (debug_log && HEARTBEAT(15)) { log("debug 12:\t%lld", microtime()); }
@@ -988,27 +988,27 @@ void heartbeat(int heart_pulse) {
 		if (debug_log && HEARTBEAT(15)) { log("debug 14a:\t%lld", microtime()); }
 		chore_update();
 		if (debug_log && HEARTBEAT(15)) { log("debug 14b:\t%lld", microtime()); }
-		
+
 		// save the world at dawn
 		if (time_info.hours == 7) {
 			save_whole_world();
 			if (debug_log && HEARTBEAT(15)) { log("debug 14c:\t%lld", microtime()); }
 		}
 	}
-	
+
 	// slightly off the hour to prevent yet another thing on the tick
 	if (HEARTBEAT(SECS_PER_MUD_HOUR+1)) {
 		update_empire_npc_data();
 		if (debug_log && HEARTBEAT(15)) { log("debug 15:\t%lld", microtime()); }
 	}
-	
+
 	if (HEARTBEAT(SECS_PER_REAL_MIN)) {
 		check_wars();
 		if (debug_log && HEARTBEAT(15)) { log("debug 16:\t%lld", microtime()); }
 		reset_instances();
 		if (debug_log && HEARTBEAT(15)) { log("debug 17:\t%lld", microtime()); }
 	}
-	
+
 	if (HEARTBEAT(15 * SECS_PER_REAL_MIN)) {
 		output_map_to_file();
 		if (debug_log && HEARTBEAT(15)) { log("debug 18:\t%lld", microtime()); }
@@ -1022,38 +1022,38 @@ void heartbeat(int heart_pulse) {
 			if (debug_log && HEARTBEAT(15)) { log("debug 19:\t%lld", microtime()); }
 		}
 	}
-	
+
 	if (HEARTBEAT(12 * SECS_PER_REAL_HOUR)) {
 		reduce_city_overages();
 		if (debug_log && HEARTBEAT(15)) { log("debug 20:\t%lld", microtime()); }
 		check_newbie_islands();
 		if (debug_log && HEARTBEAT(15)) { log("debug 20.5:\t%lld", microtime()); }
 	}
-	
+
 	if (HEARTBEAT(SECS_PER_REAL_HOUR)) {
 		reduce_stale_empires();
 		if (debug_log && HEARTBEAT(15)) { log("debug 21:\t%lld", microtime()); }
 		detect_evos_per_hour();
 		if (debug_log && HEARTBEAT(15)) { log("debug 21.5:\t%lld", microtime()); }
 	}
-	
+
 	if (HEARTBEAT(30 * SECS_PER_REAL_MIN)) {
 		reduce_outside_territory();
 		if (debug_log && HEARTBEAT(15)) { log("debug 22:\t%lld", microtime()); }
 	}
-	
+
 	if (HEARTBEAT(3 * SECS_PER_REAL_MIN)) {
 		generate_adventure_instances();
 		if (debug_log && HEARTBEAT(15)) { log("debug 23:\t%lld", microtime()); }
 	}
-	
+
 	if (HEARTBEAT(5 * SECS_PER_REAL_MIN)) {
 		prune_instances();
 		if (debug_log && HEARTBEAT(15)) { log("debug 24:\t%lld", microtime()); }
 		update_trading_post();
 		if (debug_log && HEARTBEAT(15)) { log("debug 24.5:\t%lld", microtime()); }
 	}
-	
+
 	if (HEARTBEAT(SECS_PER_MUD_HOUR)) {
 		if (time_info.hours == 12) {
 			process_imports();
@@ -1063,7 +1063,7 @@ void heartbeat(int heart_pulse) {
 		run_map_evolutions();
 		if (debug_log && HEARTBEAT(15)) { log("debug 26:\t%lld", microtime()); }
 	}
-	
+
 	if (HEARTBEAT(1)) {
 		if (data_table_needs_save) {
 			save_data_table(FALSE);
@@ -1072,7 +1072,7 @@ void heartbeat(int heart_pulse) {
 		save_marked_empires();
 		if (debug_log && HEARTBEAT(15)) { log("debug 27:\t%lld", microtime()); }
 	}
-	
+
 	// this goes roughly last -- update MSDP users
 	if (HEARTBEAT(1)) {
 		msdp_update();
@@ -1083,7 +1083,7 @@ void heartbeat(int heart_pulse) {
 
 	/* Turn this off */
 	gain_cond_messsage = FALSE;
-	
+
 	// check for immediate reboot
 	if (reboot_control.immediate == TRUE) {
 		perform_reboot();
@@ -1103,14 +1103,14 @@ void act(const char *str, int hide_invisible, char_data *ch, const void *obj, co
 	if (!str || !*str) {
 		return;
 	}
-	
+
 	/* If the bit is set, unset dg_act_check, thus the ! below */
 	dg_act_check = !IS_SET(act_flags, DG_NO_TRIG);
 
 	if (IS_SET(act_flags, TO_SLEEP)) {
 		to_sleeping = TRUE;
 	}
-	
+
 	if (IS_SET(act_flags, TO_SPAMMY)) {
 		is_spammy = TRUE;
 	}
@@ -1139,7 +1139,7 @@ void act(const char *str, int hide_invisible, char_data *ch, const void *obj, co
 		else if (IS_SET(act_flags, ACT_VEHICLE_OBJ) && obj && IN_ROOM((vehicle_data*)obj)) {
 			to = ROOM_PEOPLE(IN_ROOM((vehicle_data*)obj));
 		}
-		
+
 		if (to) {
 			for (; to; to = to->next_in_room) {
 				if (!SENDOK(to) || (to == ch))
@@ -1171,11 +1171,11 @@ void act(const char *str, int hide_invisible, char_data *ch, const void *obj, co
 void msg_to_desc(descriptor_data *d, const char *messg, ...) {
 	char output[MAX_STRING_LENGTH];
 	va_list tArgList;
-	
+
 	if (!messg || !d) {
 		return;
 	}
-	
+
 	va_start(tArgList, messg);
 	vsprintf(output, messg, tArgList);
 
@@ -1195,10 +1195,10 @@ void msg_to_desc(descriptor_data *d, const char *messg, ...) {
 void msg_to_char(char_data *ch, const char *messg, ...) {
 	char output[MAX_STRING_LENGTH];
 	va_list tArgList;
-	
+
 	if (!messg || !ch->desc)
 		return;
-	
+
 	va_start(tArgList, messg);
 	vsprintf(output, messg, tArgList);
 
@@ -1220,14 +1220,14 @@ void msg_to_vehicle(vehicle_data *veh, bool awake_only, const char *messg, ...) 
 	descriptor_data *desc;
 	va_list tArgList;
 	char_data *ch;
-	
+
 	if (!messg || !veh) {
 		return;
 	}
-	
+
 	va_start(tArgList, messg);
 	vsprintf(output, messg, tArgList);
-	
+
 	LL_FOREACH(descriptor_list, desc) {
 		if (STATE(desc) != CON_PLAYING || !(ch = desc->character)) {
 			continue;
@@ -1238,11 +1238,11 @@ void msg_to_vehicle(vehicle_data *veh, bool awake_only, const char *messg, ...) 
 		if (awake_only && GET_POS(ch) <= POS_SLEEPING && GET_POS(ch) != POS_DEAD) {
 			continue;
 		}
-		
+
 		// looks valid
 		SEND_TO_Q(output, desc);
 	}
-	
+
 	va_end(tArgList);
 }
 
@@ -1257,11 +1257,11 @@ void msg_to_vehicle(vehicle_data *veh, bool awake_only, const char *messg, ...) 
 void olc_audit_msg(char_data *ch, any_vnum vnum, const char *messg, ...) {
 	char output[MAX_STRING_LENGTH];
 	va_list tArgList;
-	
+
 	if (!messg || !ch->desc) {
 		return;
 	}
-	
+
 	va_start(tArgList, messg);
 	vsprintf(output, messg, tArgList);
 	msg_to_desc(ch->desc, "[%5d] %s\r\n", vnum, output);
@@ -1291,7 +1291,7 @@ void send_to_all(const char *messg, ...) {
 void perform_act(const char *orig, char_data *ch, const void *obj, const void *vict_obj, const char_data *to, bitvector_t act_flags) {
 	extern char *get_vehicle_short_desc(vehicle_data *veh, char_data *to);
 	extern bool is_fight_ally(char_data *ch, char_data *frenemy);
-	
+
 	const char *i = NULL;
 	char *buf, lbuf[MAX_STRING_LENGTH], *dg_arg = NULL;
 	bool real_ch = FALSE, real_vict = FALSE;
@@ -1302,7 +1302,7 @@ void perform_act(const char *orig, char_data *ch, const void *obj, const void *v
 
 	const char *ACTNULL = "<NULL>";
 	#define CHECK_NULL(pointer, expression)  if ((pointer) == NULL) i = ACTNULL; else i = (expression);
-	
+
 	// check fight messages (may exit early)
 	if (!IS_NPC(to) && ch != vict_obj && IS_SET(act_flags, TO_COMBAT_HIT | TO_COMBAT_MISS)) {
 		show = any = FALSE;
@@ -1366,13 +1366,13 @@ void perform_act(const char *orig, char_data *ch, const void *obj, const void *v
 				show |= SHOW_FIGHT_MESSAGES(to, FM_OTHER_MISSES);
 			}
 		}
-		
+
 		// are we supposed to show it?
 		if (!show) {
 			return;
 		}
 	}
-	
+
 	// prepare the message
 	buf = lbuf;
 	for (;;) {
@@ -1473,7 +1473,7 @@ void perform_act(const char *orig, char_data *ch, const void *obj, const void *v
 	*(--buf) = '\r';
 	*(++buf) = '\n';
 	*(++buf) = '\0';
-	
+
 	// find the first non-color-code and cap it
 	for (iter = 0; iter < strlen(lbuf); ++iter) {
 		if (lbuf[iter] == '&') {
@@ -1524,13 +1524,13 @@ void send_to_group(char_data *ch, struct group_data *group, const char *msg, ...
 
 	if (msg == NULL)
 		return;
-		
+
 	for (mem = group->members; mem; mem = mem->next) {
 		tch = mem->member;
 		if (tch != ch && !IS_NPC(tch) && tch->desc && STATE(tch->desc) == CON_PLAYING) {
 			va_start(args, msg);
 			vsprintf(output, msg, args);
-			
+
 			if (!IS_NPC(tch) && GET_CUSTOM_COLOR(tch, CUSTOM_COLOR_GSAY)) {
 				msg_to_desc(tch->desc, "\t%c[group] %s\t0\r\n", GET_CUSTOM_COLOR(tch, CUSTOM_COLOR_GSAY), output);
 			}
@@ -1658,7 +1658,7 @@ void close_socket(descriptor_data *d) {
 		free(d->backstr);
 	}
 	// do NOT free d->str_on_abort (is a pointer to something else)
-	
+
 	// other strings
 	if (d->host) {
 		free(d->host);
@@ -1669,7 +1669,7 @@ void close_socket(descriptor_data *d) {
 	if (d->file_storage) {
 		free(d->file_storage);
 	}
-	
+
 	ProtocolDestroy(d->pProtocol);
 
 	// OLC_x: olc data
@@ -1733,7 +1733,7 @@ void close_socket(descriptor_data *d) {
 	if (d->olc_vehicle) {
 		free_vehicle(d->olc_vehicle);
 	}
-	
+
 	free(d);
 }
 
@@ -1887,15 +1887,15 @@ void init_descriptor(descriptor_data *newd, int desc) {
 	*newd->output = '\0';
 	newd->bufptr = 0;
 	newd->has_prompt = 0;
-	
+
 	newd->save_empire = NOTHING;
 
 	CREATE(newd->history, char *, HISTORY_SIZE);
 	newd->pProtocol = ProtocolCreate();
-	
+
 	newd->olc_type = 0;
 	newd->olc_vnum = NOTHING;
-	
+
 	// ensure clean data
 	*newd->color.last_fg = '\0';
 	*newd->color.last_bg = '\0';
@@ -1905,7 +1905,7 @@ void init_descriptor(descriptor_data *newd, int desc) {
 	*newd->color.want_bg = '\0';
 	newd->color.want_clean = FALSE;
 	newd->color.want_underline = FALSE;
-	
+
 	// find a free desc num
 	start = last_desc;
 	do {
@@ -1913,7 +1913,7 @@ void init_descriptor(descriptor_data *newd, int desc) {
 			last_desc = 1;
 		}
 	} while (desc_num_in_use(last_desc) && last_desc != start);	// prevent infinite loop
-	
+
 	newd->desc_num = last_desc;
 }
 
@@ -1993,15 +1993,15 @@ socket_t init_socket(ush_int port) {
 */
 bool is_slow_ip(char *ip) {
 	extern const char *slow_nameserver_ips[];
-	
+
 	int iter;
-	
+
 	for (iter = 0; *slow_nameserver_ips[iter] != '\n'; ++iter) {
 		if (!strncmp(ip, slow_nameserver_ips[iter], strlen(slow_nameserver_ips[iter]))) {
 			return TRUE;
 		}
 	}
-	
+
 	return FALSE;
 }
 
@@ -2037,28 +2037,28 @@ void manipulate_input_queue(descriptor_data *desc, char *input) {
 		}
 		return;
 	}
-	
+
 	// clearing everything?
 	clear_all = (*input == '-');
-	
+
 	// remove matches from queue
 	found = FALSE;
 	for (iter = desc->input.head; iter; iter = next_iter) {
 		next_iter = iter->next;
-		
+
 		if (clear_all || is_abbrev(input, iter->text)) {
 			REMOVE_FROM_LIST(iter, desc->input.head, next);
-			
+
 			if (!clear_all) {
 				msg_to_desc(desc, "Removed: %s\r\n", iter->text);
 			}
-			
+
 			free(iter->text);
 			free(iter);
 			found = TRUE;
 		}
 	}
-	
+
 	// find new tail
 	if ((iter = desc->input.head)) {
 		while (iter->next) {
@@ -2069,7 +2069,7 @@ void manipulate_input_queue(descriptor_data *desc, char *input) {
 	else {
 		desc->input.tail = NULL;
 	}
-	
+
 	if (clear_all) {
 		msg_to_desc(desc, "Input queue cleared.\r\n");
 	}
@@ -2159,7 +2159,7 @@ int new_descriptor(int s) {
 	/* prepend to list */
 	newd->next = descriptor_list;
 	descriptor_list = newd;
-	
+
 	ProtocolNegotiate(newd);
 	SEND_TO_Q(intros[number(0, num_intros-1)], newd);
 
@@ -2323,7 +2323,7 @@ int process_input(descriptor_data *t) {
 	char *ptr, *read_point, *write_point, *nl_pos = NULL;
 	char tmp[MAX_INPUT_LENGTH], *input;
 	bool add_to_head = FALSE;
-	
+
 	*read_buf = '\0';
 
 	/* first, find the point where we left off reading data */
@@ -2334,19 +2334,19 @@ int process_input(descriptor_data *t) {
 	do {
 		if (strlen(t->inbuf) > MAX_INPUT_LENGTH || (space_left <= 0 && strlen(t->inbuf) > 0)) {
 			char buffer[MAX_STRING_LENGTH];
-			
+
 			// truncate to input length
 			if (strlen(t->inbuf) >= MAX_INPUT_LENGTH) {
 				t->inbuf[MAX_INPUT_LENGTH-2] = '\0';
 			}
-			
+
 			snprintf(buffer, sizeof(buffer), "Line too long. Truncated to:\r\n%s\r\n", t->inbuf);
 			if (write_to_descriptor(t->descriptor, buffer) < 0) {
 				return (-1);
 			}
-			
+
 			nl_pos = read_point;	// need to infer a newline
-			
+
 			// flush the rest of the input
 			do {
 				bytes_read = perform_socket_read(t->descriptor, read_buf, MAX_PROTOCOL_BUFFER);
@@ -2354,10 +2354,10 @@ int process_input(descriptor_data *t) {
 					return -1;
 				}
 			} while (bytes_read > 0);
-			
+
 			// exit the do-while now
 			break;
-			
+
 			/* formerly:
 			log("WARNING: process_input: about to close connection: input overflow");
 			return (-1);
@@ -2445,7 +2445,7 @@ int process_input(descriptor_data *t) {
 		}
 
 		*write_point = '\0';
-		
+
 		if ((space_left <= 1) && (ptr < nl_pos)) {
 			char buffer[MAX_INPUT_LENGTH + 64];
 
@@ -2500,7 +2500,7 @@ int process_input(descriptor_data *t) {
 		else {
 			strncpy(t->last_input, input, sizeof(t->last_input)-1);
 			t->last_input[sizeof(t->last_input)-1] = '\0';
-			
+
 			if (t->history[t->history_pos])
 				free(t->history[t->history_pos]);	/* Clear the old line. */
 			t->history[t->history_pos] = str_dup(input);	/* Save the new. */
@@ -2562,12 +2562,12 @@ static int process_output(descriptor_data *t) {
 	if (!t->pProtocol->WriteOOB) {
 		char prompt[MAX_STRING_LENGTH];
 		int wantsize;
-		
+
 		strcpy(prompt, make_prompt(t));
 		wantsize = strlen(prompt);
 		strncpy(prompt, ProtocolOutput(t, prompt, &wantsize), MAX_STRING_LENGTH);
 		prompt[MAX_STRING_LENGTH-1] = '\0';
-				
+
 		// force a color code flush
 		snprintf(prompt + strlen(prompt), sizeof(prompt) - strlen(prompt), "%s", flush_reduced_color_codes(t));
 
@@ -2597,17 +2597,17 @@ static int process_output(descriptor_data *t) {
 	/* Handle snooping: prepend "% " and send to snooper. */
 	if (t->snoop_by && *t->output) {
 		char stripped[MAX_STRING_LENGTH];
-		
+
 		strncpy(stripped, strip_telnet_codes(t->output), MAX_STRING_LENGTH);
 		stripped[MAX_STRING_LENGTH-1] = '\0';
-		
+
 		if (*stripped) {
 			write_to_output("% ", t->snoop_by);
 			write_to_output(stripped, t->snoop_by);
 			write_to_output("%%", t->snoop_by);
 		}
 	}
-	
+
 	/* The common case: all saved output was handed off to the kernel buffer. */
 	if (result >= t->bufptr) {
 		/* If we were using a large buffer, put the large buffer on the buffer pool
@@ -2641,7 +2641,7 @@ static int process_output(descriptor_data *t) {
 		strcpy(t->output, t->output + result);	/* strcpy: OK (overlap) */
 		t->bufptr -= result;
 		t->bufspace += result;
-		
+
 		t->data_left_to_write = TRUE;
 	}
 
@@ -2727,7 +2727,7 @@ void write_to_output(const char *txt, descriptor_data *t) {
 		size = sizeof(protocol_txt) - 1;
 		strcpy(protocol_txt + size - strlen(overflow_txt), overflow_txt);	/* strcpy: OK */
 	}
-	
+
 	// check that text size is going to fit into a large bufffer
 	if (size + t->bufptr + 1 > LARGE_BUFSIZE) {
 		size = LARGE_BUFSIZE - t->bufptr - 1;
@@ -2742,7 +2742,7 @@ void write_to_output(const char *txt, descriptor_data *t) {
 		t->bufptr += size;
 		return;
 	}
-	
+
 	++buf_switches;
 
 	/* if the pool has a buffer in it, grab it */
@@ -2804,7 +2804,7 @@ void write_to_q(const char *txt, struct txt_q *queue, int aliased, bool add_to_h
 //// PROMPT //////////////////////////////////////////////////////////////////
 
 /**
-* Makes the prompt for the character. 
+* Makes the prompt for the character.
 *
 * @param descriptor_data *d The descriptor we're making the prompt for
 * @return char* A pointer to the prompt string.
@@ -2824,7 +2824,7 @@ char *make_prompt(descriptor_data *d) {
 		strcpy(prompt, "] ");
 	else if (STATE(d) == CON_PLAYING) {
 		*prompt = '\0';
-		
+
 		// show idle after 10 minutes
 		if ((d->character->char_specials.timer * SECS_PER_MUD_HOUR / SECS_PER_REAL_MIN) >= 10) {
 			strcat(prompt, "\tr[IDLE]\t0 ");
@@ -2850,7 +2850,7 @@ char *make_prompt(descriptor_data *d) {
 */
 char *prompt_color_by_prc(int cur, int max) {
 	int prc = cur * 100 / MAX(1, max);
-	
+
 	if (prc >= 90) {
 		return "\tg";
 	}
@@ -2871,7 +2871,7 @@ char *prompt_color_by_prc(int cur, int max) {
 */
 char *prompt_str(char_data *ch) {
 	char *str;
-	
+
 	if (FIGHTING(ch)) {
 		str = GET_FIGHT_PROMPT(REAL_CHAR(ch)) ? GET_FIGHT_PROMPT(REAL_CHAR(ch)) : GET_PROMPT(REAL_CHAR(ch));
 	}
@@ -2928,7 +2928,7 @@ char *replace_prompt_codes(char_data *ch, char *str) {
 	extern const char *mana_levels[];
 	extern const char *blood_levels[];
 	extern struct action_data_struct action_data[];
-	
+
 	static char pbuf[MAX_STRING_LENGTH];
 	char i[MAX_STRING_LENGTH], spare[10];
 	char *cp, *tmp;
@@ -2979,11 +2979,11 @@ char *replace_prompt_codes(char_data *ch, char *str) {
 							strcat(i, "\tmH");
 						}
 					}
-					
+
 					if (!*i) {
 						strcpy(i, "\t0-");
 					}
-					
+
 					strcat(i, "\t0");
 					tmp = i;
 					break;
@@ -3028,11 +3028,11 @@ char *replace_prompt_codes(char_data *ch, char *str) {
 							sprintf(i + strlen(i), "%shostile", (*i ? " " : ""));
 						}
 					}
-					
+
 					if (!*i) {
 						strcpy(i, "--");
 					}
-					
+
 					tmp = i;
 					break;
 				}
@@ -3055,11 +3055,11 @@ char *replace_prompt_codes(char_data *ch, char *str) {
 							strcat(i, "\tcO");
 						}
 					}
-					
+
 					if (!*i) {
 						strcpy(i, "\t0-");
 					}
-					
+
 					strcat(i, "\t0");
 					tmp = i;
 					break;
@@ -3084,11 +3084,11 @@ char *replace_prompt_codes(char_data *ch, char *str) {
 							sprintf(i + strlen(i), "%solc-%s", (*i ? " " : ""), prompt_olc_info(ch));
 						}
 					}
-					
+
 					if (!*i) {
 						strcpy(i, "--");
 					}
-					
+
 					tmp = i;
 					break;
 				}
@@ -3111,7 +3111,7 @@ char *replace_prompt_codes(char_data *ch, char *str) {
 					}
 					tmp = i;
 					break;
-				
+
 				}
 				case 'F': {	// %f enemy's focus (tank): health total
 					if (FIGHTING(ch) && (vict = FIGHTING(FIGHTING(ch))) && !IS_NPC(vict) && vict != ch) {
@@ -3234,7 +3234,7 @@ char *replace_prompt_codes(char_data *ch, char *str) {
 					else {
 						sprintf(i, "%%%c", *str);
 					}
-					
+
 					tmp = i;
 					break;
 				}
@@ -3421,7 +3421,7 @@ void game_loop(socket_t mother_desc) {
 			gettimeofday(&last_time, (struct timezone *) 0);
 		}
 		*/
-		
+
 		/* Set up the input, output, and exception sets for select(). */
 		FD_ZERO(&input_set);
 		FD_ZERO(&output_set);
@@ -3563,19 +3563,19 @@ void game_loop(socket_t mother_desc) {
 		/* Print prompts for other descriptors who had no other output */
 		for (d = descriptor_list; d; d = next_d) {
 			next_d = d->next;
-			
+
 			if (!d->has_prompt) {
 				char prompt[MAX_STRING_LENGTH];
 				int wantsize;
-		
+
 				strcpy(prompt, make_prompt(d));
 				wantsize = strlen(prompt);
 				strncpy(prompt, ProtocolOutput(d, prompt, &wantsize), MAX_STRING_LENGTH);
 				prompt[MAX_STRING_LENGTH-1] = '\0';
-				
+
 				// force a color code flush
 				snprintf(prompt + strlen(prompt), sizeof(prompt) - strlen(prompt), "%s", flush_reduced_color_codes(d));
-				
+
 				if (write_to_descriptor(d->descriptor, prompt) >= 0) {
 					d->has_prompt = 1;
 				}
@@ -3678,7 +3678,7 @@ int main(int argc, char **argv) {
 	port = DFLT_PORT;
 	dir = DFLT_DIR;
 
-	while ((pos < argc) && (*(argv[pos]) == '-')) {
+	while ((pos < argc) /*&& (*(argv[pos]) == '-')*/) {
 		switch (*(argv[pos] + 1)) {
 			case 'C':
 				reboot_recovery = TRUE;
@@ -3732,6 +3732,7 @@ int main(int argc, char **argv) {
 					argv[0]);
 				exit(0);
 			default:
+                if(pos > 1)
 				printf("SYSERR: Unknown option -%c in argument string.\n", *(argv[pos] + 1));
 				break;
 		}
@@ -3860,7 +3861,7 @@ void reboot_recover(void) {
 	}
 
 	unlink(REBOOT_FILE);
-	
+
 	// no-spam
 	global_mute_slash_channel_joins = TRUE;
 
@@ -3868,7 +3869,7 @@ void reboot_recover(void) {
 	for (;;) {
 		fOld = TRUE;
 		fscanf(fp, "%d %s %s %s\n", &desc, name, host, protocol_info);
-		
+
 		// end indicator (endicator?)
 		if (desc == -1) {
 			break;
@@ -3889,7 +3890,7 @@ void reboot_recover(void) {
 		descriptor_list = d;
 
 		d->connected = CON_CLOSE;
-				
+
 		d->character = load_player(name, TRUE);
 		if (d->character) {
 			REMOVE_BIT(PLR_FLAGS(d->character), PLR_MAILING);
@@ -3898,7 +3899,7 @@ void reboot_recover(void) {
 		else {
 			fOld = FALSE;
 		}
-		
+
 		// recover protocol settings
 		CopyoverSet(d, protocol_info);
 
@@ -3912,7 +3913,7 @@ void reboot_recover(void) {
 			d->connected = CON_PLAYING;
 		}
 	}
-	
+
 	// second pass: rebuild groups
 	while (get_line(fp, line)) {
 		// end
@@ -3933,7 +3934,7 @@ void reboot_recover(void) {
 			log("SYSERR: Unknown line '%s' in reboot file", line);
 		}
 	}
-	
+
 	global_mute_slash_channel_joins = FALSE;
 	fclose(fp);
 }

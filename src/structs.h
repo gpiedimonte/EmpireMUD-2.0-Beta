@@ -622,7 +622,7 @@ typedef struct vehicle_data vehicle_data;
 #define FNC_SAW  BIT(19)	//allows sawing here
 #define FNC_SHIPYARD  BIT(20)	// used to build ships
 #define FNC_SMELT  BIT(21)	// allows smelting here
-#define FNC_STABLE  BIT(22)	// can shear, milk, and barde animals here; animals in this 
+#define FNC_STABLE  BIT(22)	// can shear, milk, and barde animals here; animals in this
 #define FNC_SUMMON_PLAYER  BIT(23)	// allows the summon player command
 #define FNC_TAILOR  BIT(24)	// counts as tailor; can use refashion here
 #define FNC_TANNERY  BIT(25)	// allows tanning here
@@ -1071,7 +1071,7 @@ typedef struct vehicle_data vehicle_data;
  //////////////////////////////////////////////////////////////////////////////
 //// MOBILE DEFINES //////////////////////////////////////////////////////////
 
-// MOB_x: Mobile flags 
+// MOB_x: Mobile flags
 #define MOB_BRING_A_FRIEND  BIT(0)	// a. Mob auto-assists any other (!charmed) mob
 #define MOB_SENTINEL  BIT(1)	// b. Mob should not move
 #define MOB_AGGRESSIVE  BIT(2)	// c. Mob hits players in the room
@@ -1106,7 +1106,7 @@ typedef struct vehicle_data vehicle_data;
 #define MOB_NO_EXPERIENCE  BIT(31)	// F. players get no exp against this mob
 #define MOB_NO_RESCALE  BIT(32)	// G. mob won't rescale (after the first time), e.g. if specific traits were set
 #define MOB_SILENT  BIT(33)	// H. will not set off custom strings
-
+#define MOB_LYCANTHROPE BIT(34) //w. mob is a lychanthrope
 
 // MOB_CUSTOM_x: custom message types
 #define MOB_CUSTOM_ECHO  0
@@ -1648,6 +1648,8 @@ typedef struct vehicle_data vehicle_data;
 #define LORE_CREATED			10
 #define LORE_MAKE_VAMPIRE		11
 #define LORE_PROMOTED			12
+#define LORE_START_LYCANTHROPE  13
+#define LORE_ALPHA_LYCANTHROPE  14
 
 
 // MORPHF_x: flags for morphs
@@ -2120,14 +2122,14 @@ typedef struct vehicle_data vehicle_data;
 struct ability_data {
 	any_vnum vnum;
 	char *name;
-	
+
 	bitvector_t flags;	// ABILF_ flags
 	any_vnum mastery_abil;	// used for crafting abilities
-	
+
 	// live cached (not saved) data:
 	skill_data *assigned_skill;	// skill for reverse-lookup
 	int skill_level;	// level of that skill required
-	
+
 	UT_hash_handle hh;	// ability_table hash handle
 	UT_hash_handle sorted_hh;	// sorted_abilities hash handle
 };
@@ -2160,7 +2162,7 @@ struct ban_list_element {
 	int type;
 	time_t date;
 	char name[MAX_NAME_LENGTH+1];
-	
+
 	struct ban_list_element *next;
 };
 
@@ -2169,7 +2171,7 @@ struct ban_list_element {
 struct extra_descr_data {
 	char *keyword;	// Keyword in look/examine
 	char *description;	// What to see
-	
+
 	struct extra_descr_data *next;
 };
 
@@ -2188,7 +2190,7 @@ struct generic_name_data {
 	int sex;	// male/female/both (each list id has multiple gender lists)
 	char **names;
 	int size;	// size of names array
-	
+
 	struct generic_name_data *next;	// LL
 };
 
@@ -2200,7 +2202,7 @@ struct global_data {
 	int type;	// GLOBAL_x
 	bitvector_t flags;	// GLB_FLAG_x flags
 	int value[NUM_GLB_VAL_POSITIONS];	// misc vals
-	
+
 	// constraints
 	any_vnum ability;	// must have this to trigger, unless NO_ABIL
 	double percent;	// chance to trigger
@@ -2208,11 +2210,11 @@ struct global_data {
 	bitvector_t type_exclude;	// type-dependent flags
 	int min_level;
 	int max_level;
-	
+
 	// data
 	struct interaction_item *interactions;
 	struct archetype_gear *gear;
-	
+
 	UT_hash_handle hh;
 };
 
@@ -2229,7 +2231,7 @@ struct group_data {
 	char_data *leader;
 	struct group_member_data *members;	// LL
 	bitvector_t group_flags;	// GROUP_x flags
-	
+
 	struct group_data *next;	// global group LL
 };
 
@@ -2280,7 +2282,7 @@ struct interaction_item {
 	double percent;	// how often to do it 0.01 - 100.00
 	int quantity;	// how many to give
 	char exclusion_code;	// creates mutually-exclusive sets
-	
+
 	struct interaction_item *next;
 };
 
@@ -2291,19 +2293,19 @@ struct morph_data {
 	char *keywords;
 	char *short_desc;	// short description (a bat)
 	char *long_desc;	// long description (seen in room)
-	
+
 	bitvector_t flags;	// MORPHF_ flags
 	bitvector_t affects;	// AFF_ flags added
 	int attack_type;	// TYPE_ const
 	int move_type;	// MOVE_TYPE_ const
 	struct apply_data *applies;	// how it modifies players
-	
+
 	int cost_type;	// any pool (NUM_POOLS)
 	int cost;	// amount it costs in that pool
 	any_vnum ability;	// required ability or NO_ABIL
 	obj_vnum requires_obj;	// required item or NOTHING
 	int max_scale;	// highest possible level
-	
+
 	UT_hash_handle hh;	// morph_table hash
 	UT_hash_handle sorted_hh;	// sorted_morphs hash
 };
@@ -2314,7 +2316,7 @@ struct obj_apply {
 	byte apply_type;	// APPLY_TYPE_x
 	byte location;	// Which ability to change (APPLY_)
 	sh_int modifier;	// How much it changes by
-	
+
 	struct obj_apply *next;	// linked list
 };
 
@@ -2344,10 +2346,10 @@ struct req_data {
 	any_vnum vnum;
 	bitvector_t misc;	// stores flags for some types
 	char group;	// for "AND" grouping
-	
+
 	int needed;	// how many the player needs
 	int current;	// how many the player has (for places where this data is tracked
-	
+
 	struct req_data *next;
 };
 
@@ -2369,7 +2371,7 @@ struct shipping_data {
 	long status_time;	// when it gained that status
 	room_vnum ship_origin;	// where the ship is coming from (in case we have to send it back)
 	int shipping_id;	// VEH_SHIPPING_ID() of ship
-	
+
 	struct shipping_data *next;
 };
 
@@ -2380,12 +2382,12 @@ struct skill_data {
 	char *name;
 	char *abbrev;
 	char *desc;
-	
+
 	bitvector_t flags;	// SKILLF_ flags
 	int max_level;	// skill's maximum level (default 100)
 	int min_drop_level;	// how low the skill can be dropped manually (default 0)
 	struct skill_ability *abilities;	// assigned abilities
-	
+
 	UT_hash_handle hh;	// skill_table hash handle
 	UT_hash_handle sorted_hh;	// sorted_skills hash handle
 };
@@ -2396,7 +2398,7 @@ struct skill_ability {
 	any_vnum vnum;	// ability vnum
 	any_vnum prerequisite;	// required ability vnum
 	int level;	// skill level to get this ability
-	
+
 	struct skill_ability *next;	// linked list
 };
 
@@ -2416,7 +2418,7 @@ struct spawn_info {
 	mob_vnum vnum;
 	double percent;	// .01 - 100.0
 	bitvector_t flags;	// SPAWN_x
-	
+
 	struct spawn_info *next;
 };
 
@@ -2443,15 +2445,15 @@ struct time_info_data {
 struct trading_post_data {
 	int player;	// player idnum who posted the auction
 	bitvector_t state;	// TPD_x (state flags)
-	
+
 	long start;	// when the auction began
 	int for_hours;	// how long the auction should run
-	
+
 	obj_data *obj;	// the item up for auction
 	int buy_cost;	// # of coins to buy it
 	int post_cost;	// # of coins paid to post it
 	empire_vnum coin_type;	// empire vnum or OTHER_COIN for buy/post coins
-	
+
 	struct trading_post_data *next;	// LL
 };
 
@@ -2462,12 +2464,12 @@ struct trading_post_data {
 // adventure zones
 struct adventure_data {
 	adv_vnum vnum;
-	
+
 	// strings
 	char *name;
 	char *author;
 	char *description;
-	
+
 	// numeric data
 	rmt_vnum start_vnum, end_vnum;	// room template vnum range (inclusive)
 	int min_level, max_level;	// level range
@@ -2475,13 +2477,13 @@ struct adventure_data {
 	int reset_time;	// how often to reset things (minutes)
 	bitvector_t flags;	// ADV_ flags
 	int player_limit;	// maximum number of players at a time (if over 0)
-	
+
 	// lists
 	struct adventure_link_rule *linking;
-	
+
 	// for cleanup triggers
 	struct trig_proto_list *proto_script;	// list of default triggers
-	
+
 	UT_hash_handle hh;	// adventure_table hash
 };
 
@@ -2490,12 +2492,12 @@ struct adventure_data {
 struct adventure_link_rule {
 	int type;	// ADV_LINK_x
 	bitvector_t flags;	// ADV_LINKF_x
-	
+
 	int value;	// e.g. building vnum, sector vnum to link from (by type)
 	obj_vnum portal_in, portal_out;	// some types use portals
 	int dir;	// some attachments take a preferred direction
 	bitvector_t bld_on, bld_facing;	// for applying to the map
-	
+
 	struct adventure_link_rule *next;
 };
 
@@ -2506,7 +2508,7 @@ struct adventure_spawn {
 	any_vnum vnum;	// thing to spawn
 	double percent;	// .01 - 100.0
 	int limit;	// maximum number that may spawn in 1 instance
-	
+
 	struct adventure_spawn *next;
 };
 
@@ -2518,10 +2520,10 @@ struct exit_template {
 	char *keyword;	// name if it will be closable
 	sh_int exit_info;	// EX_x
 	rmt_vnum target_room;	// room template to link to
-	
+
 	// unsaved:
 	bool done;	// used while instantiating rooms
-	
+
 	struct exit_template *next;
 };
 
@@ -2530,19 +2532,19 @@ struct exit_template {
 struct instance_data {
 	any_vnum id;	// instance id
 	adv_data *adventure;	// which adventure this is an instance of
-	
+
 	bitvector_t flags;	// INST_x
 	room_data *location;	// map room linked from
 	room_data *start;	// starting interior room (first room of zone)
 	int level;	// locked, scaled level
 	time_t created;	// when instantiated
 	time_t last_reset;	// for reset timers
-	
+
 	// unstored data
 	int size;	// size of room arrays
 	room_data **room;	// array of rooms (some == NULL)
 	struct instance_mob *mob_counts;	// hash table (hh)
-	
+
 	struct instance_data *next;
 };
 
@@ -2558,26 +2560,26 @@ struct instance_mob {
 // adventure zone room templates
 struct room_template {
 	rmt_vnum vnum;
-	
+
 	// strings
 	char *title;
 	char *description;
-	
+
 	// numeric data
 	bitvector_t flags;	// RMT_
 	bitvector_t base_affects;	// ROOM_AFF_
 	bitvector_t functions;	// FNC_
-	
+
 	// lists
 	struct adventure_spawn *spawns;	// list of objs/mobs
 	struct extra_descr_data *ex_description;	// extra descriptions
 	struct exit_template *exits;	// list of exits
 	struct interaction_item *interactions;	// interaction items
 	struct trig_proto_list *proto_script;	// list of default triggers
-	
+
 	// live data (not saved, not freed)
 	struct quest_lookup *quest_lookups;
-	
+
 	UT_hash_handle hh;	// room_template_table hash
 };
 
@@ -2593,15 +2595,15 @@ struct archetype_data {
 	char *lore;	// optional lore entry
 	int type;	// ARCHT_
 	bitvector_t flags;	// ARCH_
-	
+
 	// default starting ranks
 	char *male_rank;
 	char *female_rank;
-	
+
 	struct archetype_skill *skills;	// linked list
 	struct archetype_gear *gear;	// linked list
 	int attributes[NUM_ATTRIBUTES];	// starting attributes (default 1)
-	
+
 	UT_hash_handle hh;	// archetype_table hash handle
 	UT_hash_handle sorted_hh;	// sorted_archetypes hash handle
 };
@@ -2610,7 +2612,7 @@ struct archetype_data {
 struct archetype_skill {
 	any_vnum skill;	// SKILL_ type
 	int level;	// starting level
-	
+
 	struct archetype_skill *next;
 };
 
@@ -2639,12 +2641,12 @@ struct augment_data {
 	int type;	// AUGMENT_x
 	bitvector_t flags;	// AUG_x flags
 	bitvector_t wear_flags;	// ITEM_WEAR_x where this augment applies
-	
+
 	any_vnum ability;	// required ability or NO_ABIL
 	obj_vnum requires_obj;	// required item or NOTHING
 	struct apply_data *applies;	// how it modifies items
 	struct resource_data *resources;	// resources required
-	
+
 	UT_hash_handle hh;	// augment_table hash
 	UT_hash_handle sorted_hh;	// sorted_augments hash
 };
@@ -2667,7 +2669,7 @@ struct resource_data {
 	obj_vnum vnum;	// which item
 	int amount;	// how many
 	int misc;	// various uses
-	
+
 	struct resource_data *next;	// linked list
 };
 
@@ -2685,17 +2687,17 @@ struct author_data {
 // data for a book
 struct book_data {
 	book_vnum vnum;
-	
+
 	int author;
 	unsigned int bits;
 	char *title;
 	char *byline;
 	char *item_name;
 	char *item_description;
-	
+
 	struct paragraph_data *paragraphs;	// linked list
 	struct library_data *in_libraries;	// places this book is kept
-	
+
 	UT_hash_handle hh;	// book_table
 };
 
@@ -2713,36 +2715,36 @@ struct library_data {
 // building_table
 struct bld_data {
 	bld_vnum vnum;	// virtual number
-	
+
 	char *name;	// short name
 	char *title;	// shown on look
 	char *icon;	// map icon
 	char *commands;	// listed under the room desc/map
 	char *description;	// for non-map buildings
-	
+
 	int max_damage;
 	int fame;	// how much is added to empire fame
 	bitvector_t flags;	// BLD_
 	bitvector_t functions;	// FNC_
 	bld_vnum upgrades_to;	// the vnum of any building
-	
+
 	int extra_rooms;	// how many rooms it can have
 	bitvector_t designate_flags;	// DES_x
 	bitvector_t base_affects;	// ROOM_AFF_
-	
+
 	int citizens;	// how many people live here
 	int military;	// how much it adds to the military pool
 	mob_vnum artisan_vnum;	// vnum of an artisan to load
-	
+
 	struct extra_descr_data *ex_description;	// extra descriptions
 	struct spawn_info *spawns;	// linked list of spawn data
 	struct interaction_item *interactions;	// interaction items
 	struct trig_proto_list *proto_script;	// list of default triggers
 	struct resource_data *yearly_maintenance;	// needed each year
-	
+
 	// live data (not saved, not freed)
 	struct quest_lookup *quest_lookups;
-	
+
 	UT_hash_handle hh;	// building_table hash handle
 };
 
@@ -2755,12 +2757,12 @@ struct class_data {
 	any_vnum vnum;
 	char *name;
 	char *abbrev;	// short form (4 letters)
-	
+
 	bitvector_t flags;	// CLASSF_ flags
 	int pools[NUM_POOLS];	// health/etc values at 100
 	struct class_skill_req *skill_requirements;	// linked list
 	struct class_ability *abilities;	// linked list
-	
+
 	UT_hash_handle hh;	// ability_table hash handle
 	UT_hash_handle sorted_hh;	// sorted_abilities hash handle
 };
@@ -2791,25 +2793,25 @@ struct mob_special_data {
 	int current_scale_level;	// level the mob was scaled to, or -1 for not scaled
 	int min_scale_level;	// minimum level this mob may be scaled to
 	int max_scale_level;	// maximum level this mob may be scaled to
-	
+
 	int name_set;	// NAMES_x
 	struct custom_message *custom_msgs;	// any custom messages
 	faction_data *faction;	// if any
-	
+
 	int to_hit;	// Mob's attack % bonus
 	int to_dodge;	// Mob's dodge % bonus
 	int damage;	// Raw damage
 	int	attack_type;	// weapon type
-	
+
 	byte move_type;	// how the mob moves
-	
+
 	struct pursuit_data *pursuit;	// mob pursuit
 	room_vnum pursuit_leash_loc;	// where to return to
 	struct mob_tag *tagged_by;	// mob tagged by
 
 	time_t spawn_time;	// used for despawning
 	any_vnum instance_id;	// instance the mob belongs to, or NOTHING if none
-	
+
 	// for #n-named mobs
 	int dynamic_sex;
 	int dynamic_name;
@@ -2820,7 +2822,7 @@ struct mob_special_data {
 struct custom_message {
 	int type;	// OBJ_CUSTOM_ or MOB_CUSTOM_
 	char *msg;
-	
+
 	struct custom_message *next;
 };
 
@@ -2837,7 +2839,7 @@ struct pursuit_data {
 	int idnum;	// player id
 	time_t last_seen;	// time of last spotting
 	room_vnum location;	// prevents tracking forever
-	
+
 	struct pursuit_data *next;
 };
 
@@ -2852,7 +2854,7 @@ struct account_data {
 	time_t last_logon;	// timestamp of the last login on the account
 	bitvector_t flags;	// ACCT_
 	char *notes;	// account notes
-	
+
 	UT_hash_handle hh;	// account_table
 };
 
@@ -2861,7 +2863,7 @@ struct account_data {
 struct account_player {
 	char *name;	// stored on load in order to build index
 	player_index_data *player;
-	
+
 	struct account_player *next;
 };
 
@@ -2879,7 +2881,7 @@ struct coin_data {
 	int amount;	// raw value
 	empire_vnum empire_id;	// which empire (or NOTHING) for misc
 	time_t last_acquired;	// helps cleanup
-	
+
 	struct coin_data *next;
 };
 
@@ -2887,7 +2889,7 @@ struct coin_data {
 // player table
 struct player_index_data {
 	// these stats are all copied from the player on startup (and save_char)
-	
+
 	int idnum;	// player id
 	char *name;	// character's login name
 	char *fullname;	// character's display name
@@ -2900,7 +2902,7 @@ struct player_index_data {
 	empire_data *loyalty;	// empire, if any
 	int rank;	// empire rank
 	char *last_host;	// last known host
-	
+
 	UT_hash_handle idnum_hh;	// player_table_by_idnum
 	UT_hash_handle name_hh;	// player_table_by_name
 };
@@ -2910,7 +2912,7 @@ struct player_index_data {
 struct txt_block {
 	char *text;
 	int aliased;
-	
+
 	struct txt_block *next;
 };
 
@@ -2951,11 +2953,11 @@ struct descriptor_data {
 	char **showstr_vector;	// for paging through texts
 	int showstr_count;	// number of pages to page through
 	int showstr_page;	// which page are we currently showing?
-	
+
 	protocol_t *pProtocol; // see protocol.c
 	struct color_reducer color;
 	bool no_nanny;	// skips interpreting player input if only a telnet negotiation sequence was sent
-	
+
 	char **str;	// for the modify-str system
 	char *backstr;	// for the modify-str aborts
 	char *str_on_abort;	// a pointer to restore if the player aborts the editor
@@ -2966,7 +2968,7 @@ struct descriptor_data {
 	int notes_id;	// idnum of player for notes-editing
 	any_vnum save_empire;	// for the text editor to know which empire to save
 	bool allow_null;	// string editor can be empty/null
-	
+
 	int has_prompt;	// is the user at a prompt?
 	char inbuf[MAX_RAW_INPUT_LENGTH];	// buffer for raw input
 	char last_input[MAX_INPUT_LENGTH];	// the last input
@@ -2987,12 +2989,12 @@ struct descriptor_data {
 	descriptor_data *snoop_by;	// And who is snooping this char
 
 	char *last_act_message;	// stores the last thing act() sent to this desc
-	
+
 	// olc
 	int olc_type;	// OLC_OBJECT, etc -- only when an editor is open
 	char *olc_storage;	// a character buffer created and used by some olc modes
 	any_vnum olc_vnum;	// vnum being edited
-	
+
 	// OLC_x: olc types
 	ability_data *olc_ability;	// abil being edited
 	adv_data *olc_adventure;	// adv being edited
@@ -3015,7 +3017,7 @@ struct descriptor_data {
 	skill_data *olc_skill;	// skill being edited
 	struct trig_data *olc_trigger;	// trigger being edited
 	vehicle_data *olc_vehicle;	// vehicle being edited
-	
+
 	// linked list
 	descriptor_data *next;
 };
@@ -3044,7 +3046,7 @@ struct mail_data {
 	int from;	// player idnum
 	time_t timestamp;	// when the mail was sent
 	char *body;	// mail body
-	
+
 	struct mail_data *next;	// linked list
 };
 
@@ -3053,7 +3055,7 @@ struct mail_data {
 struct mount_data {
 	mob_vnum vnum;	// mob that's mounted, for name
 	bitvector_t flags;	// stored MOUNT_ flags
-	
+
 	UT_hash_handle hh;	// hash handle for GET_MOUNT_LIST(ch)
 };
 
@@ -3077,7 +3079,7 @@ struct player_skill_data {
 	int resets;	// resets available
 	bool noskill;	// if TRUE, do not gain
 	skill_data *ptr;	// live skill pointer
-	
+
 	UT_hash_handle hh;	// player's skill hash
 };
 
@@ -3104,7 +3106,7 @@ struct player_slash_history {
 struct player_special_data {
 	// SAVED PORTION //
 	// add new items to write_player_to_file() and read_player_primary_data()
-	
+
 	// account and player stuff
 	account_data *account;	// pointer to account_table entry
 	int temporary_account_id;	// used during creation
@@ -3122,7 +3124,7 @@ struct player_special_data {
 	int promo_id;	// entry in the promo_codes table
 	int ignore_list[MAX_IGNORES];	// players who can't message you
 	int last_tell;	// idnum of last tell from
-	
+
 	// character strings
 	char *lastname;	// Last name
 	char *title;	// shown on 'who'/'whois'
@@ -3130,26 +3132,26 @@ struct player_special_data {
 	char *fight_prompt;	// fight prompt
 	char *poofin;	// shown when immortal appears
 	char *poofout;	// shown when immortal disappears
-	
+
 	// preferences
 	bitvector_t pref;	// preference flags for PCs.
 	int last_tip;	// for display_tip_to_character
 	byte mapsize;	// how big the player likes the map
 	char custom_colors[NUM_CUSTOM_COLORS];	// for custom channel coloring, storing the letter part of the & code ('r' for &r)
-	
+
 	// quests
 	struct player_quest *quests;	// quests the player is on (player_quest->next)
 	struct player_completed_quest *completed_quests;	// hash table (hh)
-	
+
 	// empire
 	empire_vnum pledge;	// Empire he's applying to
 	byte rank;	// Rank in the empire
-	
+
 	// misc player attributes
-	ubyte apparent_age;	// for vampires	
+	ubyte apparent_age;	// for vampires
 	sh_int conditions[NUM_CONDS];	// Drunk, full, thirsty
 	int resources[NUM_MATERIALS];	// God resources
-	
+
 	// various lists
 	struct coin_data *coins;	// linked list of coin data
 	struct alias_data *aliases;	// Character's aliases
@@ -3173,7 +3175,7 @@ struct player_special_data {
 	room_vnum action_room;	// player location
 	int action_vnum[NUM_ACTION_VNUMS];	// slots for storing action data (use varies)
 	struct resource_data *action_resources;	// temporary list for resources stored during actions
-	
+
 	// locations and movement
 	room_vnum load_room;	// Which room to place char in
 	room_vnum load_room_check;	// this is the home room of the player's loadroom, used to check that they're still in the right place
@@ -3186,12 +3188,12 @@ struct player_special_data {
 	room_vnum adventure_summon_return_location;	// where to send a player back to if they're outside an adventure
 	room_vnum adventure_summon_return_map;	// map check location for the return loc
 	room_vnum marked_location;	// for map marking
-	
+
 	// olc data
 	any_vnum olc_min_vnum;	// low range of olc permissions
 	any_vnum olc_max_vnum;	// high range of olc permissions
 	bitvector_t olc_flags;	// olc permissions
-	
+
 	// skill/ability data
 	any_vnum creation_archetype[NUM_ARCHETYPE_TYPES];	// array of creation choices
 	struct player_skill_data *skill_hash;
@@ -3205,7 +3207,7 @@ struct player_special_data {
 	ubyte class_progression;	// % of the way from SPECIALTY_SKILL_CAP to CLASS_SKILL_CAP
 	ubyte class_role;	// ROLE_ chosen by the player
 	class_data *character_class;  // character's class as determined by top skills
-	
+
 	// tracking for specific skills
 	byte confused_dir;  // people without Navigation think this dir is north
 	char *disguised_name;	// verbatim copy of name -- grabs custom mob names and empire names
@@ -3216,20 +3218,20 @@ struct player_special_data {
 	struct mount_data *mount_list;	// list of stored mounts
 	mob_vnum mount_vnum;	// current mount vnum
 	bitvector_t mount_flags;	// current mount flags
-	
+
 	// other
 	int largest_inventory;	// highest inventory size a player has ever had
-	
+
 	// UNSAVED PORTION //
-	
+
 	int gear_level;	// computed gear level -- determine_gear_level()
 	byte reboot_conf;	// Reboot confirmation
 	byte create_points;	// Used in character creation
 	int group_invite_by;	// idnum of the last player to invite this one
 	time_t move_time[TRACK_MOVE_TIMES];	// timestamp of last X moves
-	
+
 	struct combat_meters meters;	// combat meter data
-	
+
 	bool needs_delayed_load;	// whether or not the player still needs delayed data
 	bool restore_on_login;	// mark the player to trigger a free reset when they enter the game
 	bool reread_empire_tech_on_login;	// mark the player to trigger empire tech re-read on entering the game
@@ -3269,7 +3271,7 @@ struct char_point_data {
 	int current_pools[NUM_POOLS];	// HEALTH, MOVE, MANA, BLOOD
 	int max_pools[NUM_POOLS];	// HEALTH, MOVE, MANA, BLOOD
 	int deficit[NUM_POOLS];	// HEALTH, MOVE, MANA, BLOOD
-	
+
 	int extra_attributes[NUM_EXTRA_ATTRIBUTES];	// ATT_ (dodge, etc)
 };
 
@@ -3288,7 +3290,7 @@ struct fight_data {
 struct char_special_data {
 	// SAVED SECTION //
 	// add new items to write_player_to_file() and read_player_primary_data()
-	
+
 	int idnum;	// player's idnum; -1 for mobiles
 	bitvector_t act;	// mob flag for NPCs; player flag for PCs
 	bitvector_t injuries;	// Bitvectors including damage to the player
@@ -3296,7 +3298,7 @@ struct char_special_data {
 	morph_data *morph;	// for morphed players
 
 	// UNSAVED SECTION //
-	
+
 	struct fight_data fighting;	// Opponent
 	char_data *hunting;	// Char hunted by this char
 
@@ -3308,15 +3310,15 @@ struct char_special_data {
 	vehicle_data *leading_vehicle;	// A person may lead a vehicle
 	vehicle_data *sitting_on;	// Vehicle the person is on
 	vehicle_data *driving;	// Vehicle the person is driving
-	
+
 	struct empire_npc_data *empire_npc;	// if this is an empire spawn
-	
+
 	byte position;	// Standing, fighting, sleeping, etc.
-	
+
 	int health_regen;	// Hit regeneration add
 	int move_regen;	// Move regeneration add
 	int mana_regen;	// mana regen add
-	
+
 	int carry_items;	// Number of items carried
 	int	timer;	// Timer for update
 };
@@ -3338,7 +3340,7 @@ struct char_data {
 	struct mob_special_data mob_specials;	// NPC specials
 	struct interaction_item *interactions;	// mob interaction items
 	struct cooldown_data *cooldowns;	// ability cooldowns
-	
+
 	struct affected_type *affected;	// affected by what spells
 	struct over_time_effect_type *over_time_effects;	// damage-over-time effects
 	obj_data *equipment[NUM_WEARS];	// Equipment array
@@ -3354,17 +3356,17 @@ struct char_data {
 	char_data *next_in_room;	// For room->people - list
 	char_data *next;	// For either monster or ppl-list
 	char_data *next_fighting;	// For fighting list
-	
+
 	struct follow_type *followers;	// List of chars followers
 	char_data *master;	// Who is char following?
 	struct group_data *group;	// Character's Group
 
 	char *prev_host;	// Previous host (they're Trills)
 	time_t prev_logon;	// Time (in secs) of prev logon
-	
+
 	// live data (not saved, not freed)
 	struct quest_lookup *quest_lookups;
-	
+
 	UT_hash_handle hh;	// mobile_table
 };
 
@@ -3373,7 +3375,7 @@ struct char_data {
 struct cooldown_data {
 	sh_int type;	// any COOLDOWN_ const
 	time_t expire_time;	// time at which the cooldown has expired
-	
+
 	struct cooldown_data *next;	// linked list
 };
 
@@ -3415,32 +3417,32 @@ struct lore_data {
 // main struct for the crafting code
 struct craft_data {
 	craft_vnum vnum;	// vnum of this recipe
-	
+
 	int type;	// CRAFT_TYPE_
 	any_vnum ability;	// NO_ABIL for none, otherwise ABIL_ type
-	
+
 	char *name;
 	any_vnum object;	// vnum of the object it makes, or liquid id if CRAFT_SOUP, or vehicle if CRAFT_VEHICLE
 	int quantity;	// makes X
-	
+
 	int min_level;	// required level to craft it using get_crafting_level()
 	bitvector_t flags;	// CRAFT_
 	int time;	// how many action ticks it takes
-	
+
 	// for buildings:
 	any_vnum build_type;	// a building vnum (maybe something else too?)
 	bitvector_t build_on;	// BLD_ON_x flags for the tile it's built upon
 	bitvector_t build_facing;	// BLD_ON_x flags for the tile it's facing
-	
+
 	obj_vnum requires_obj;	// only shows up if you have the item
 	struct resource_data *resources;	// linked list
-	
+
 	UT_hash_handle hh;	// craft_table hash
 	UT_hash_handle sorted_hh;	// sorted_crafts hash
 };
 
 
-// act.trade.c: For 
+// act.trade.c: For
 struct gen_craft_data_t {
 	char *command;	// "forge"
 	char *verb;	// "forging"
@@ -3455,24 +3457,24 @@ struct gen_craft_data_t {
 // data for online-editable crop data
 struct crop_data {
 	crop_vnum vnum;	// virtual number
-	
+
 	char *name;	// for stat/lookups/mapreader
 	char *title;	// room title
 	struct icon_data *icons;	// linked list of available icons
 	int mapout;	// position in mapout_color_names, mapout_color_tokens
-	
+
 	int climate;	// CLIMATE_x
 	bitvector_t flags;	// CROPF_x flags
-	
+
 	// only spawns where:
 	int x_min;	// x >= this
 	int x_max;	// x <= this
 	int y_min;	// y >= this
 	int y_max;	// y <= this
-	
+
 	struct spawn_info *spawns;	// mob spawn data
 	struct interaction_item *interactions;	// interaction items
-	
+
 	UT_hash_handle hh;	// crop_table hash
 };
 
@@ -3525,19 +3527,19 @@ struct material_data {
 struct poison_data_type {
 	char *name;
 	any_vnum ability;
-	
+
 	int atype;	// ATYPE_
 	int apply;	// APPLY_
 	int mod;	// +/- value
 	bitvector_t aff;
-	
+
 	// dot affect
 	int dot_type;	// ATYPE_, -1 for none
 	int dot_duration;	// time for the dot
 	int dot_damage_type;	// DAM_ for the dot
 	int dot_damage;	// damage for the dot
 	int dot_max_stacks;	// how high the dot can stack
-	
+
 	int special;	// special poison procedure
 	bool allow_stack;	// whether or not it can stack
 };
@@ -3596,10 +3598,10 @@ struct empire_city_data {
 	int type;
 	int population;
 	int military;
-	
+
 	room_data *location;
 	bitvector_t traits;	// ETRAIT_x
-	
+
 	struct empire_city_data *next;
 };
 
@@ -3607,17 +3609,17 @@ struct empire_city_data {
 // per-island data for the empire
 struct empire_island {
 	int island;	// which island id
-	
+
 	// saved portion
 	int workforce_limit[NUM_CHORES];	// workforce settings
 	char *name;	// empire's local name for the island
-	
+
 	// unsaved portion
 	int tech[NUM_TECHS];	// TECH_ present on that island
 	int population;	// citizens
 	int city_terr;	// total territory IN cities on the island
 	int outside_terr;	// total territory OUTSIDE cities on the island
-	
+
 	UT_hash_handle hh;	// EMPIRE_ISLANDS(emp) hash handle
 };
 
@@ -3626,7 +3628,7 @@ struct empire_log_data {
 	int type;	// ELOG_x
 	time_t timestamp;
 	char *string;
-	
+
 	struct empire_log_data *next;
 };
 
@@ -3637,7 +3639,7 @@ struct empire_npc_data {
 	int sex;	// SEX_x
 	int name;	// position in the name list
 	room_data *home;	// where it lives
-	
+
 	empire_vnum empire_id;	// empire vnum
 	char_data *mob;
 	struct empire_npc_data *next;	// linked list
@@ -3649,7 +3651,7 @@ struct empire_political_data {
 	empire_vnum id;	// vnum of the other empire
 	int type;	// The type of relationship between them
 	int offer;	// Suggested states of relation
-	
+
 	time_t start_time;	// used mainly for war
 
 	struct empire_political_data *next;
@@ -3670,11 +3672,11 @@ struct empire_storage_data {
 struct empire_territory_data {
 	room_data *room;	// pointer to territory location
 	int population_timer;	// time to re-populate
-	
+
 	struct empire_npc_data *npcs;	// list of empire mobs that live here
-	
+
 	bool marked;	// for checking that rooms still exist
-	
+
 	struct empire_territory_data *next;	// linked list
 };
 
@@ -3685,7 +3687,7 @@ struct empire_trade_data {
 	obj_vnum vnum;	// item type
 	int limit;	// min (export), max (import)
 	double cost;	// min (export), max (import)
-	
+
 	struct empire_trade_data *next;
 };
 
@@ -3696,7 +3698,7 @@ struct empire_unique_storage {
 	int amount;	// stacking
 	sh_int flags;	// up to 15 flags, EUS_x
 	int island;	// split by islands
-	
+
 	struct empire_unique_storage *next;
 };
 
@@ -3723,19 +3725,19 @@ struct empire_workforce_tracker {
 // The main data structure for the empires
 struct empire_data {
 	empire_vnum vnum;	// empire's virtual number
-	
+
 	int leader;	// ID number of the leader, also used in pfiles
 	char *name;	// Name of the empire, defaults to leader's name
 	char *adjective;	// the adjective form of the name
 	char *banner;	// Color codes (maximum of 3) of the banner
 	char *description;	// Empire desc
 	char *motd;	// Empire MOTD
-	
+
 	long create_time;	// when it was founded
 
 	byte num_ranks;	// Total number of levels (maximum 20)
 	char *rank[MAX_RANKS];	// Name of each rank
-	
+
 	bitvector_t frontier_traits;	// ETRAIT_x
 	double coins;	// total coins (always in local currency)
 
@@ -3748,12 +3750,12 @@ struct empire_data {
 	struct empire_unique_storage *unique_store;	// LL: eus->next
 	struct empire_trade_data *trade;
 	struct empire_log_data *logs;
-	
+
 	// unsaved data
 	struct empire_territory_data *territory_list;	// linked list of buildings/rooms
 	struct empire_city_data *city_list;	// linked list of cities
 	struct empire_workforce_tracker *ewt_tracker;	// workforce tracker
-	
+
 	// unsaved data
 	int city_terr;	// total territory IN cities
 	int outside_terr;	// total territory OUTSIDE cities
@@ -3776,9 +3778,9 @@ struct empire_data {
 	bool storage_loaded;	// record whether or not storage has been loaded, to prevent saving over it
 	int top_shipping_id;	// shipping system quick id for the empire
 	bool banner_has_underline;	// helper
-	
+
 	bool needs_save;	// for things that delay-save
-	
+
 	UT_hash_handle hh;	// empire_table hash handle
 };
 
@@ -3788,16 +3790,16 @@ struct empire_data {
 
 struct faction_data {
 	any_vnum vnum;
-	
+
 	char *name;	// basic name
 	char *description;	// full text desc
-	
+
 	bitvector_t flags;	// FCT_ flags
 	int max_rep;	// REP_ they cap at, positive
 	int min_rep;	// REP_ they cap at, negative
 	int starting_rep;	// REP_ initial reputation for players
 	struct faction_relation *relations;	// hash table
-	
+
 	// lists
 	UT_hash_handle hh;	// faction_table hash handle
 	UT_hash_handle sorted_hh;	// sorted_factions hash handle
@@ -3809,7 +3811,7 @@ struct faction_relation {
 	any_vnum vnum;	// who it's with
 	bitvector_t flags;	// FCTR_ flags
 	faction_data *ptr;	// quick reference
-	
+
 	UT_hash_handle hh;	// fct->relations hash handle
 };
 
@@ -3894,14 +3896,14 @@ struct obj_flag_data {
 	int timer;	// Timer for object
 	bitvector_t bitvector;	// To set chars bits
 	int material;	// Material this is made out of
-	
+
 	int cmp_type;	// CMP_ component type (CMP_NONE if not a component)
 	int cmp_flags;	// CMPF_ component flags
-	
+
 	int current_scale_level;	// level the obj was scaled to, or -1 for not scaled
 	int min_scale_level;	// minimum level this obj may be scaled to
 	int max_scale_level;	// maximum level this obj may be scaled to
-	
+
 	any_vnum requires_quest;	// can only have obj whilst on quest
 };
 
@@ -3910,7 +3912,7 @@ struct obj_flag_data {
 struct obj_data {
 	obj_vnum vnum;	// object's virtual number
 	ush_int version;	// for auto-updating objects
-	
+
 	room_data *in_room;	// In what room -- NULL when container/carried
 
 	struct obj_flag_data obj_flags;	// Object information
@@ -3926,16 +3928,16 @@ struct obj_data {
 	char_data *carried_by;	// Carried by NULL in room/container
 	char_data *worn_by;	// Worn by?
 	sh_int worn_on;	// Worn where?
-	
+
 	empire_vnum last_empire_id;	// id of the last empire to have this
 	int last_owner_id;	// last person to have the item
 	time_t stolen_timer;	// when the object was last stolen
 	empire_vnum stolen_from;	// empire who owned it
-	
+
 	struct interaction_item *interactions;	// interaction items
 	struct obj_storage_type *storage;	// linked list of where an obj can be stored
 	time_t autostore_timer;	// how long an object has been where it be
-	
+
 	struct obj_binding *bound_to;	// LL of who it's bound to
 
 	obj_data *in_obj;	// In what object NULL when none
@@ -3947,11 +3949,11 @@ struct obj_data {
 
 	obj_data *next_content;	// For 'contains' lists
 	obj_data *next;	// For the object list
-	
+
 	// live data (not saved, not freed)
 	struct quest_lookup *quest_lookups;
 	bool search_mark;
-	
+
 	UT_hash_handle hh;	// object_table hash
 };
 
@@ -3960,7 +3962,7 @@ struct obj_data {
 struct obj_storage_type {
 	bld_vnum building_type;	// building vnum
 	int flags;	// STORAGE_x
-	
+
 	struct obj_storage_type *next;
 };
 
@@ -3971,29 +3973,29 @@ struct obj_storage_type {
 struct quest_data {
 	any_vnum vnum;
 	ush_int version;	// for auto-updating
-	
+
 	char *name;
 	char *description;	// is this also the start-quest message?
 	char *complete_msg;	// text shown on completion
-	
+
 	bitvector_t flags;	// QST_ flags
 	struct quest_giver *starts_at;	// people/things that start the quest
 	struct quest_giver *ends_at;	// people/things where you can turn it in
 	struct req_data *tasks;	// list of objectives
 	struct quest_reward *rewards;	// linked list
-	
+
 	// constraints
 	int min_level;	// or 0 for no min
 	int max_level;	// or 0 for no max
 	struct req_data *prereqs;	// linked list of prerequisites
 	int repeatable_after;	// minutes to repeat; NOT_REPEATABLE for none
 	int daily_cycle;	// for dailies that rotate with others
-	
+
 	// misc data
 	bool daily_active;	// if FALSE, quest is not available today
-	
+
 	struct trig_proto_list *proto_script;	// quest triggers
-	
+
 	UT_hash_handle hh;	// hash handle for quest_table
 };
 
@@ -4002,7 +4004,7 @@ struct quest_data {
 struct quest_giver {
 	int type;	// mob, obj, etc
 	any_vnum vnum;	// what mob
-	
+
 	struct quest_giver *next;	// may have more than one
 };
 
@@ -4019,7 +4021,7 @@ struct quest_reward {
 	int type;	// QR_ type
 	any_vnum vnum;	// which one of type
 	int amount;	// how many items, how much exp
-	
+
 	struct quest_reward *next;
 };
 
@@ -4036,10 +4038,10 @@ struct quest_temp_list {
 struct player_completed_quest {
 	any_vnum vnum;	// which quest
 	time_t last_completed;	// when
-	
+
 	any_vnum last_instance_id;	// where last completed one was acquired
 	any_vnum last_adventure;	// which adventure it was acquired in
-	
+
 	UT_hash_handle hh;	// stored in player's hash table
 };
 
@@ -4049,12 +4051,12 @@ struct player_quest {
 	any_vnum vnum;	// which quest
 	ush_int version;	// for auto-updating
 	time_t start_time;	// when started
-	
+
 	struct req_data *tracker;	// quest tasks to track
-	
+
 	any_vnum instance_id;	// where it was acquired (if anywhere)
 	any_vnum adventure;	// which adventure it was acquired in
-	
+
 	struct player_quest *next;	// linked list
 };
 
@@ -4065,7 +4067,7 @@ struct player_quest {
 // data for online-editable sector data
 struct sector_data {
 	sector_vnum vnum;	// virtual number
-	
+
 	char *name;	// for stat/lookups/mapreader
 	char *title;	// room title
 	char *commands;	// commands shown below the map
@@ -4073,16 +4075,16 @@ struct sector_data {
 	struct icon_data *icons;	// linked list of available icons
 	char roadside_icon;	// single-character icon for showing on composite tiles
 	int mapout;	// position in mapout_color_names, mapout_color_tokens
-	
+
 	int movement_loss;	// move point cost
 	int climate;	// CLIMATE_x
 	bitvector_t flags;	// SECTF_x flags
 	bitvector_t build_flags;	// matches up with craft_data.build_on and .build_facing
-	
+
 	struct spawn_info *spawns;	// mob spawn data
 	struct evolution_data *evolution;	// change over time
 	struct interaction_item *interactions;	// interaction items
-	
+
 	UT_hash_handle hh;	// sector_table hash
 };
 
@@ -4093,7 +4095,7 @@ struct evolution_data {
 	int value;	// used by some types, e.g. # of adjacent forests
 	double percent;	// chance of happening per zone update
 	sector_vnum becomes;	// sector to transform to
-	
+
 	struct evolution_data *next;
 };
 
@@ -4101,13 +4103,13 @@ struct evolution_data {
 // for iteration of map locations by sector
 struct sector_index_type {
 	sector_vnum vnum;	// which sect
-	
+
 	struct map_data *sect_rooms;	// LL of rooms
 	int sect_count;	// how many rooms in the list
-	
+
 	struct map_data *base_rooms;	// LL of rooms
 	int base_count;	// number of rooms with it as the base sect
-	
+
 	UT_hash_handle hh;	// sector_index hash handle
 };
 
@@ -4117,17 +4119,17 @@ struct sector_index_type {
 
 struct social_data {
 	any_vnum vnum;
-	
+
 	char *name;	// for internal labeling
 	char *command;	// as seen/typed by the player
-	
+
 	bitvector_t flags;	// AUG_x flags
 	int min_char_position;	// POS_ of the character
 	int min_victim_position;	// POS_ of victim
 	struct req_data *requirements;	// linked list of requirements
-	
+
 	char *message[NUM_SOCM_MESSAGES];	// strings
-	
+
 	UT_hash_handle hh;	// social_table hash
 	UT_hash_handle sorted_hh;	// sorted_socials hash
 };
@@ -4148,16 +4150,16 @@ struct trig_proto_list {
 
 struct vehicle_data {
 	any_vnum vnum;
-	
+
 	char *keywords;	// targeting terms
 	char *short_desc;	// the sentence-building name ("a canoe")
 	char *long_desc;	// As described in the room.
 	char *look_desc;	// Description when looked at
 	char *icon;	// Optional: Shown on map if not null
-	
+
 	struct vehicle_attribute_data *attributes;	// non-instanced data
 	bitvector_t flags;	// VEH_ flags
-	
+
 	// instance data
 	empire_data *owner;	// which empire owns it, if any
 	int scale_level;	// determines amount of damage, etc
@@ -4176,12 +4178,12 @@ struct vehicle_data {
 	char_data *led_by;	// person leading it
 	char_data *sitting_on;	// person sitting on it
 	char_data *driver;	// person driving it
-	
+
 	// scripting
 	int script_id;	// used by DG triggers - unique id
 	struct trig_proto_list *proto_script;	// list of default triggers
 	struct script_data *script;	// script info for the object
-	
+
 	// lists
 	struct vehicle_data *next;	// vehicle_list (global) linked list
 	struct vehicle_data *next_in_room;	// ROOM_VEHICLES(room) linked list
@@ -4246,17 +4248,17 @@ struct weather_data {
 // init_room(), delete_room(), disassociate_building()
 struct room_data {
 	room_vnum vnum; // room number (vnum)
-	
+
 	empire_data *owner;  // who owns this territory
-	
+
 	sector_data *sector_type;  // terrain type -- saved in file as vnum
 	sector_data *base_sector;  // for when built-over -- ^
 	crop_data *crop_type;	// if this room has a crop, this is it
-	
+
 	struct complex_room_data *complex; // for rooms that are buildings, inside, adventures, etc
 	byte light;  // number of light sources
 	int exits_here;	// number of rooms that have complex->exits to this one
-	
+
 	struct depletion_data *depletion;	// resource depletion
 
 	// custom data
@@ -4267,11 +4269,11 @@ struct room_data {
 	struct affected_type *af;  // room affects
 	unsigned int affects;  // affect bitvector (modified)
 	unsigned int base_affects;  // base affects
-	
+
 	struct track_data *tracks;	// for tracking
-	
+
 	time_t last_spawn_time;  // used to spawn npcs
-	
+
 	struct room_extra_data *extra_data;	// hash of misc storage
 
 	struct trig_proto_list *proto_script;	/* list of default triggers  */
@@ -4280,9 +4282,9 @@ struct room_data {
 	obj_data *contents;  // start of item list (obj->next_content)
 	char_data *people;  // start of people list (ch->next_in_room)
 	vehicle_data *vehicles;	// start of vehicle list (veh->next_in_room)
-	
+
 	struct reset_com *reset_commands;	// used only during startup
-	
+
 	UT_hash_handle hh;	// hash handle for world_table
 	room_data *next_interior;	// linked list: interior_room_list
 };
@@ -4291,26 +4293,26 @@ struct room_data {
 // data used only for rooms that are map buildings, interiors, or adventures
 struct complex_room_data {
 	struct room_direction_data *exits;  // directions
-	
+
 	struct resource_data *to_build;  // for incomplete/dismantled buildings
 	struct resource_data *built_with;	// actual list of things used to build it
-	
+
 	// pointers to the room's building or room template data, IF ANY
 	bld_data *bld_ptr;	// point to building_table proto
 	room_template *rmt_ptr;	// points to room_template_table proto
-	
+
 	byte entrance;  // direction of entrance
 	int patron;  // for shrine gods
 	byte inside_rooms;  // count of designated rooms inside
 	room_data *home_room;  // for interior rooms (and boats and instances), means this is actually part of another room; is saved as vnum to file but is room_data* in real life
-	
+
 	int disrepair;	// UNUSED: as of b4.15 this is 0 for all buildings and not used (but is saved to file and coule be repurposed)
-	
+
 	vehicle_data *vehicle;  // the associated vehicle (usually only on the home room)
 	struct instance_data *instance;	// if part of an instantiated adventure
-	
+
 	int private_owner;	// for privately-owned houses
-	
+
 	byte burning;  // if burning, the burn value
 	double damage;  // for catapulting
 };
@@ -4320,7 +4322,7 @@ struct complex_room_data {
 struct depletion_data {
 	int type;
 	int count;
-	
+
 	struct depletion_data *next;
 };
 
@@ -4330,12 +4332,12 @@ struct island_info {
 	any_vnum id;	// game-assigned, permanent id
 	char *name;	// global name for the island
 	bitvector_t flags;	// ISLE_ flags
-	
+
 	// computed data
 	int tile_size;
 	room_vnum center;
 	room_vnum edge[NUM_SIMPLE_DIRS];	// edges
-	
+
 	UT_hash_handle hh;	// island_table hash
 };
 
@@ -4350,7 +4352,7 @@ struct reset_com {
 
 	char *sarg1;	// string argument
 	char *sarg2;	// string argument
-	
+
 	struct reset_com *next;
 };
 
@@ -4363,7 +4365,7 @@ struct room_direction_data {
 	sh_int exit_info;	// EX_x
 	room_vnum to_room;	// Where direction leads (or NOWHERE)
 	room_data *room_ptr;	// direct link to a room (set in renum_world)
-	
+
 	struct room_direction_data *next;
 };
 
@@ -4372,7 +4374,7 @@ struct room_direction_data {
 struct room_extra_data {
 	int type;	// ROOM_EXTRA_x
 	int value;
-	
+
 	UT_hash_handle hh;	// room->extra_data hash
 };
 
@@ -4381,10 +4383,10 @@ struct room_extra_data {
 struct track_data {
 	int player_id;	// player or NOTHING
 	mob_vnum mob_num;	// mob or NOTHING
-	
+
 	time_t timestamp;	// when
 	byte dir;	// which way
-	
+
 	struct track_data *next;
 };
 
@@ -4393,14 +4395,14 @@ struct track_data {
 struct map_data {
 	room_vnum vnum;	// corresponding room vnum (coordinates can be derived from here)
 	int island;	// the island id
-	
+
 	// three basic sector types
 	sector_data *sector_type;	// current sector
 	sector_data *base_sector;	// underlying current sector (e.g. plains under building)
 	sector_data *natural_sector;	// sector at time of map generation
-	
+
 	crop_data *crop_type;	// possible crop type
-	
+
 	// lists
 	struct map_data *next_in_sect;	// LL of all map locations of a given sect
 	struct map_data *next_in_base_sect;	// LL for base sect

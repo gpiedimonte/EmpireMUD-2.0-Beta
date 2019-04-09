@@ -513,7 +513,7 @@ ACMD(do_mfollow);
 cpp_extern const struct command_info cmd_info[] = {
 	/* this must be first -- for specprocs */
 	STANDARD_CMD( "RESERVED", POS_DEAD, NULL, NO_MIN, NO_GRANTS, NO_SCMD, CTYPE_UTIL, CMD_NO_ABBREV, NO_ABIL ),
-	
+
 	// basic command setup:
 	// STANDARD_CMD( "command", POS_x, do_function, MIN_LEVEL, GRANTS_x, SCMD_x, CTYPE_x, CMD_x, ABIL_x ),
 	// STANDARD_CMD( "defaults", POS_STANDING, do_function, NO_MIN, NO_GRANTS, NO_SCMD, CTYPE_UTIL, NOBITS, NO_ABIL ),
@@ -544,7 +544,7 @@ cpp_extern const struct command_info cmd_info[] = {
 	// . is "olc" for imms but "bookedit" for mortals
 	GRANT_CMD( ".", POS_DEAD, do_olc, LVL_BUILDER, CTYPE_OLC, GRANT_OLC ),
 	SCMD_CMD( ".", POS_STANDING, do_library, NO_MIN, CTYPE_UTIL, SCMD_BOOKEDIT ),
-	
+
 	SIMPLE_CMD( "at", POS_DEAD, do_at, LVL_START_IMM, CTYPE_IMMORTAL ),
 	SIMPLE_CMD( "abandon", POS_RESTING, do_abandon, NO_MIN, CTYPE_EMPIRE ),
 	STANDARD_CMD( "ablate", POS_FIGHTING, do_damage_spell, NO_MIN, NO_GRANTS, ABIL_ABLATE, CTYPE_COMBAT, NOBITS, ABIL_ABLATE ),
@@ -681,12 +681,13 @@ cpp_extern const struct command_info cmd_info[] = {
 	SIMPLE_CMD( "esay", POS_DEAD, do_esay, NO_MIN, CTYPE_EMPIRE ),
 	SIMPLE_CMD( "etalk", POS_DEAD, do_esay, NO_MIN, CTYPE_EMPIRE ),
 	ABILITY_CMD( "escape", POS_STANDING, do_escape, NO_MIN, CTYPE_MOVE, ABIL_ESCAPE ),
+    SCMD_CMD( "exits", POS_RESTING, do_exits, NO_MIN, CTYPE_UTIL, -1 ),
+
 	SIMPLE_CMD( "estats", POS_DEAD, do_estats, NO_MIN, CTYPE_EMPIRE ),
 	SIMPLE_CMD( "examine", POS_SITTING, do_examine, NO_MIN, CTYPE_UTIL ),
 	STANDARD_CMD( "excavate", POS_STANDING, do_excavate, NO_MIN, NO_GRANTS, NO_SCMD, CTYPE_BUILD, CMD_NO_ANIMALS, NO_ABIL ),
 	SIMPLE_CMD( "exchange", POS_STANDING, do_exchange, NO_MIN, CTYPE_BUILD ),
 	SIMPLE_CMD( "execute", POS_STANDING, do_execute, NO_MIN, CTYPE_COMBAT ),
-	SCMD_CMD( "exits", POS_RESTING, do_exits, NO_MIN, CTYPE_UTIL, -1 ),
 	SCMD_CMD( "export", POS_DEAD, do_import, NO_MIN, CTYPE_UTIL, TRADE_EXPORT ),
 	SIMPLE_CMD( "expel", POS_DEAD, do_expel, NO_MIN, CTYPE_EMPIRE ),
 	STANDARD_CMD( "edelete", POS_DEAD, do_edelete, LVL_CIMPL, GRANT_EMPIRES, NO_SCMD, CTYPE_EMPIRE, CMD_NO_ABBREV, NO_ABIL ),
@@ -1032,9 +1033,9 @@ cpp_extern const struct command_info cmd_info[] = {
 	SIMPLE_CMD( "workforce", POS_DEAD, do_workforce, NO_MIN, CTYPE_EMPIRE ),
 	ABILITY_CMD( "worm", POS_STUNNED, do_worm, NO_MIN, CTYPE_MOVE, ABIL_WORM ),
 	SIMPLE_CMD( "write", POS_STANDING, do_write, NO_MIN, CTYPE_COMM ),
-	
+
 	{ ",", POS_DEAD, do_string_editor, NO_MIN, NO_GRANTS, NO_SCMD, CTYPE_UTIL, NOBITS, NO_ABIL },
-	
+
 	/* DG trigger commands */
 	ABILITY_CMD( "tattach", POS_DEAD, do_tattach, NO_MIN, CTYPE_IMMORTAL, CMD_IMM_OR_MOB_ONLY ),
 	ABILITY_CMD( "tdetach", POS_DEAD, do_tdetach, NO_MIN, CTYPE_IMMORTAL, CMD_IMM_OR_MOB_ONLY ),
@@ -1113,7 +1114,7 @@ void command_interpreter(char_data *ch, char *argument) {
 	else {
 		line = any_one_arg(argument, arg);
 	}
-	
+
 	// lowercase arg to speed up command comparisons
 	for (iter = 0; iter < strlen(arg); ++iter) {
 		arg[iter] = LOWER(arg[iter]);
@@ -1131,7 +1132,7 @@ void command_interpreter(char_data *ch, char *argument) {
 		}
 		if (IS_SET(cmd_info[cmd].flags, CMD_NO_ABBREV) ? strcmp(arg, cmd_info[cmd].command) : strncmp(cmd_info[cmd].command, arg, length)) {
 			continue;
-		}		
+		}
 		if (IS_SET(cmd_info[cmd].flags, CMD_VAMPIRE_ONLY) && !IS_VAMPIRE(ch)) {
 			continue;
 		}
@@ -1142,7 +1143,7 @@ void command_interpreter(char_data *ch, char *argument) {
 		if (cmd_info[cmd].ability != NO_ABIL && (IS_NPC(ch) ? AFF_FLAGGED(ch, AFF_CHARM) : !has_ability(ch, cmd_info[cmd].ability))) {
 			continue;
 		}
-		
+
 		// found!
 		break;
 	}
@@ -1206,7 +1207,7 @@ void command_interpreter(char_data *ch, char *argument) {
 	else if (check_command_trigger(ch, (char*)cmd_info[cmd].command, line, CMDTRG_EXACT)) {
 		return;
 	}
-	
+
 	else {
 		((*cmd_info[cmd].command_pointer) (ch, line, cmd, cmd_info[cmd].subcmd));
 	}
@@ -1368,7 +1369,7 @@ int perform_alias(descriptor_data *d, char *orig) {
 /* The interface to the outside world: do_alias */
 ACMD(do_alias) {
 	extern char *show_color_codes(char *string);
-	
+
 	char *repl;
 	struct alias_data *a, *temp;
 
@@ -1571,18 +1572,18 @@ ACMD(do_commands) {
 
 ACMD(do_missing_help_files) {
 	extern struct help_index_element *find_help_entry(int level, const char *word);
-	
+
 	struct help_index_element *found;
 	int iter, count;
 	char lbuf[MAX_STRING_LENGTH];
-	
+
 	*lbuf = 0;
-	
+
 	count = 0;
 	for (iter = 0; *cmd_info[iter].command != '\n'; ++iter) {
 		if (strcmp(cmd_info[iter].command, "RESERVED") != 0) {
 			found = find_help_entry(LVL_TOP, cmd_info[iter].command);
-		
+
 			if (!found) {
 				sprintf(lbuf, "%s %-12.12s", lbuf, cmd_info[iter].command);
 				if ((++count % 4) == 0) {
@@ -1591,12 +1592,12 @@ ACMD(do_missing_help_files) {
 			}
 		}
 	}
-	
+
 	// possible need for trailing crlf
 	if ((++count % 4) == 0) {
 		strcat(lbuf, "\r\n");
 	}
-	
+
 	if (strlen(lbuf) == 0) {
 		msg_to_char(ch, "All commands appear to have help files (but some may just be abbreviations).\r\n");
 	}
@@ -1620,21 +1621,21 @@ struct {
 	{ CON_CLAST_NAME },
 	{ CON_QSEX },
 	{ CON_Q_SCREEN_READER },	// skips to CON_Q_HAS_ALT
-	
+
 	{ CON_Q_HAS_ALT },	// skips to CON_Q_ARCHETYPE
 	{ CON_Q_ALT_NAME },
 	{ CON_Q_ALT_PASSWORD },
-	
+
 	{ CON_Q_ARCHETYPE },	// skips to CON_BONUS_CREATION if no archetypes exist
 	{ CON_ARCHETYPE_CNFRM },
 	{ CON_BONUS_CREATION },
-	
+
 	{ CON_PROMO_CODE },
 	{ CON_CONFIRM_PROMO_CODE },	// only if given invalid code
-	
+
 	{ CON_REFERRAL },
 	{ CON_FINISH_CREATION },
-	
+
 	// put this last
 	{ NOTHING }
 };
@@ -1715,7 +1716,7 @@ void prompt_creation(descriptor_data *d) {
 		}
 		case CON_ARCHETYPE_CNFRM: {
 			int iter, sub;
-			
+
 			msg_to_desc(d, "\r\nYou chose the following archetypes:\r\n");
 			for (iter = 0; iter < NUM_ARCHETYPE_TYPES; ++iter) {
 				archetype_data *arch = archetype_proto(CREATION_ARCHETYPE(d->character, iter));
@@ -1726,11 +1727,11 @@ void prompt_creation(descriptor_data *d) {
 							break;
 						}
 					}
-					
+
 					msg_to_desc(d, "%s: \tc%s\t0 - %s\r\n", archetype_menu[sub].name, GET_ARCH_NAME(arch), GET_ARCH_DESC(arch));
 				}
 			}
-			
+
 			msg_to_desc(d, "\r\nIs this correct (y/n)? ");
 			break;
 		}
@@ -1766,14 +1767,14 @@ void prompt_creation(descriptor_data *d) {
 */
 void next_creation_step(descriptor_data *d) {
 	int iter, found = NOTHING;
-	
+
 	for (iter = 0; found == NOTHING && creation_data[iter].state != NOTHING; ++iter) {
 		if (STATE(d) == creation_data[iter].state) {
 			// found the current state, pick the next one
 			found = iter+1;
 		}
 	}
-	
+
 	if (found == NOTHING || creation_data[found].state == NOTHING) {
 		set_creation_state(d, CON_FINISH_CREATION);
 	}
@@ -1786,7 +1787,7 @@ void next_creation_step(descriptor_data *d) {
 // Handler for CON_Q_ALT_NAME
 void process_alt_name(descriptor_data *d, char *arg) {
 	player_index_data *index;
-	
+
 	if (!*arg) {
 		// nothing -- send back to has-alt
 		set_creation_state(d, CON_Q_HAS_ALT);
@@ -1802,7 +1803,7 @@ void process_alt_name(descriptor_data *d, char *arg) {
 
 
 // Handler for CON_Q_ALT_PASSWORD
-void process_alt_password(descriptor_data *d, char *arg) {	
+void process_alt_password(descriptor_data *d, char *arg) {
 	char_data *alt = NULL;
 	bool file = FALSE, save = FALSE;
 	player_index_data *index;
@@ -1810,7 +1811,7 @@ void process_alt_password(descriptor_data *d, char *arg) {
 	if (!*arg) {
 		// nothing -- send back to has-alt
 		set_creation_state(d, CON_Q_HAS_ALT);
-	}	
+	}
 	else if ((index = find_player_index_by_idnum(GET_CREATION_ALT_ID(d->character))) && (alt = find_or_load_player(index->name, &file))) {
 		// loaded char, now check password
 		if (strncmp(CRYPT(arg, PASSWORD_SALT), GET_PASSWD(alt), MAX_PWD_LENGTH)) {
@@ -1829,17 +1830,17 @@ void process_alt_password(descriptor_data *d, char *arg) {
 		}
 		else {	// password ok
 			syslog(SYS_LOGIN, 0, TRUE, "NEW: associating new user %s with account for %s", GET_NAME(d->character), GET_NAME(alt));
-			
+
 			// does 2nd player have an account already? if not, make one
 			if (!GET_ACCOUNT(alt)) {
 				create_account_for_player(alt);
 				save = TRUE;
 			}
 			GET_TEMPORARY_ACCOUNT_ID(d->character) = GET_ACCOUNT(alt)->id;
-			
+
 			next_creation_step(d);
 		}
-		
+
 		// need to take char of "alt"
 		if (save) {
 			if (file) {
@@ -1851,11 +1852,11 @@ void process_alt_password(descriptor_data *d, char *arg) {
 				SAVE_CHAR(alt);
 			}
 		}
-		
+
 		if (file && alt) {
 			free_char(alt);
 		}
-		
+
 		// state was set above
 	}
 	else {
@@ -1885,16 +1886,16 @@ void show_bonus_trait_menu(char_data *ch) {
 	extern const char *bonus_bit_descriptions[];
 
 	int iter;
-	
+
 	if (IS_NPC(ch) || !ch->desc) {
 		return;
 	}
-	
+
 	msg_to_char(ch, "\r\nAdd a bonus trait:\r\n");
 	for (iter = 0; iter < NUM_BONUS_TRAITS; ++iter) {
 		msg_to_char(ch, "%2d. %s%s\r\n", (iter+1), bonus_bit_descriptions[iter], (HAS_BONUS_TRAIT(ch, BIT(iter)) ? " &g(already chosen)&0" : ""));
 	}
-	
+
 	msg_to_char(ch, "\r\nEnter a number to choose (or 'skip' to choose later) > ");
 }
 
@@ -1917,19 +1918,19 @@ void start_creation_process(descriptor_data *d) {
 bool check_multiplaying(descriptor_data *d) {
 	descriptor_data *c, *next_c;
 	bool ok = TRUE;
-	
+
 	if (ACCOUNT_FLAGGED(d->character, ACCT_MULTI_CHAR)) {
 		return TRUE;
 	}
-	
+
 	/* Check for connected players with identical hosts */
 	for (c = descriptor_list; c && ok; c = next_c) {
 		next_c = c->next;
-		
+
 		if (c == d || STATE(c) != CON_PLAYING || GET_IDNUM(c->character) == GET_IDNUM(d->character)) {
 			continue;
 		}
-		
+
 		if (!ACCOUNT_FLAGGED(d->character, ACCT_MULTI_CHAR) && GET_ACCOUNT(d->character) == GET_ACCOUNT(c->character)) {
 			// account is already online: disconnect the other one (rather than bounce them)
 			SEND_TO_Q("\r\nYour login has been usurped by another character from your account!\r\n", c);
@@ -1941,7 +1942,7 @@ bool check_multiplaying(descriptor_data *d) {
 			ok = FALSE;
 		}
 	}
-	
+
 	return ok;
 }
 
@@ -1982,7 +1983,7 @@ void send_motd(descriptor_data *d) {
 void send_login_motd(descriptor_data *desc, int bad_pws) {
 	send_motd(desc);
 	MXPSendTag(desc, "<VERSION>");
-	
+
 	/* Check bad passwords */
 	if (bad_pws) {
 		sprintf(buf, "\r\n\r\n\007\007\007&r%d LOGIN FAILURE%s SINCE LAST SUCCESSFUL LOGIN.&0\r\n", bad_pws, (bad_pws > 1) ? "S" : "");
@@ -2004,7 +2005,7 @@ void send_login_motd(descriptor_data *desc, int bad_pws) {
  */
 int perform_dupe_check(descriptor_data *d) {
 	void refresh_all_quests(char_data *ch);
-	
+
 	descriptor_data *k, *next_k;
 	char_data *target = NULL, *ch, *next_ch;
 	int mode = 0;
@@ -2125,10 +2126,10 @@ int perform_dupe_check(descriptor_data *d) {
 			syslog(SYS_LOGIN, GET_INVIS_LEV(d->character), TRUE, "%s [%s] has reconnected.", GET_NAME(d->character), d->host);
 			break;
 	}
-	
+
 	refresh_all_quests(d->character);
 	MXPSendTag(d, "<VERSION>");
-	
+
 	return (1);
 }
 
@@ -2140,7 +2141,7 @@ int _parse_name(char *arg, char *name) {
 
 	/* skip whitespaces */
 	for (; isspace(*arg); arg++);
-	
+
 	if (max_caps > 0) {
 		caps = 0;
 		for (iter = 0; iter < strlen(arg); ++iter) {
@@ -2152,7 +2153,7 @@ int _parse_name(char *arg, char *name) {
 			return 1;
 		}
 	}
-	
+
 	// don't allow leading apostrophe or dash
 	if (*arg == '\'' || *arg == '-') {
 		return 1;
@@ -2181,7 +2182,7 @@ void nanny(descriptor_data *d, char *arg) {
 	extern int num_earned_bonus_traits(char_data *ch);
 	void start_new_character(char_data *ch);
 	extern int Valid_Name(char *newname);
-	
+
 	extern struct promo_code_list promo_codes[];
 	extern const char *unapproved_login_message;
 	extern char *START_MESSG;
@@ -2192,7 +2193,7 @@ void nanny(descriptor_data *d, char *arg) {
 	int load_result, i, iter;
 	bool show_start = FALSE;
 	char_data *temp_char;
-	
+
 	// this avoids treating telnet negotiation as menu input
 	if (d->no_nanny) {
 		d->no_nanny = FALSE;
@@ -2210,7 +2211,7 @@ void nanny(descriptor_data *d, char *arg) {
 				d->character->desc = d;
 				d->character->prev_host = str_dup(d->host);	// this will be overwritten if it's not a new char
 			}
-			
+
 			if (!*arg) {
 				SET_BIT(PLR_FLAGS(d->character), PLR_KEEP_LAST_LOGIN_INFO);	// prevent login storing
 				STATE(d) = CON_CLOSE;
@@ -2230,7 +2231,7 @@ void nanny(descriptor_data *d, char *arg) {
 					d->character = temp_char;	// can't load directly; overwrites the existing char
 					d->character->desc = d;
 					check_delayed_load(d->character);
-					
+
 					/* undo it just in case they are set */
 					REMOVE_BIT(PLR_FLAGS(d->character), PLR_MAILING);
 
@@ -2275,7 +2276,7 @@ void nanny(descriptor_data *d, char *arg) {
 					STATE(d) = CON_CLOSE;
 					return;
 				}
-				
+
 				start_creation_process(d);
 			}
 			else if (*arg == 'n' || *arg == 'N') {
@@ -2323,7 +2324,7 @@ void nanny(descriptor_data *d, char *arg) {
 					}
 					return;
 				}
-				
+
 				// echo back on
 				ProtocolNoEcho(d, false);
 
@@ -2365,10 +2366,10 @@ void nanny(descriptor_data *d, char *arg) {
 					STATE(d) = CON_GOODBYE;
 					return;
 				}
-				
+
 				if (perform_dupe_check(d))
 					return;
-				
+
 				if (!PLR_FLAGGED(d->character, PLR_INVSTART)) {
 					syslog(SYS_LOGIN, GET_INVIS_LEV(d->character), TRUE, "%s [%s] has connected.", GET_NAME(d->character), PLR_FLAGGED(d->character, PLR_IPMASK) ? "masked" : d->host);
 				}
@@ -2379,9 +2380,9 @@ void nanny(descriptor_data *d, char *arg) {
 					STATE(d) = CON_BONUS_EXISTING;
 					return;
 				}
-				
+
 				send_login_motd(d, load_result);
-				
+
 				// send on to motd
 				SEND_TO_Q("\r\n*** Press ENTER: ", d);
 				STATE(d) = CON_RMOTD;
@@ -2395,7 +2396,7 @@ void nanny(descriptor_data *d, char *arg) {
 				SEND_TO_Q("Password: ", d);
 				return;
 			}
-			
+
 			GET_PASSWD(d->character) = str_dup(CRYPT(arg, PASSWORD_SALT));
 			next_creation_step(d);
 			break;
@@ -2425,7 +2426,7 @@ void nanny(descriptor_data *d, char *arg) {
 			else {
 				SEND_TO_Q("\r\nPlease type Yes or No: ", d);
 			}
-			
+
 			break;
 		}
 
@@ -2520,7 +2521,7 @@ void nanny(descriptor_data *d, char *arg) {
 			next_creation_step(d);
 			break;
 		}
-		
+
 		case CON_REFERRAL: {
 			if (*arg) {
 				// store for later
@@ -2530,23 +2531,23 @@ void nanny(descriptor_data *d, char *arg) {
 				}
 				GET_REFERRED_BY(d->character) = str_dup(arg);
 			}
-			
+
 			next_creation_step(d);
 			break;
 		}
 
 		case CON_FINISH_CREATION: {
 			// some finalization
-			
+
 			if (GET_ACCESS_LEVEL(d->character) == 0) {
 				// set to base level now
 				GET_ACCESS_LEVEL(d->character) = 1;
 			}
 			init_player(d->character);
 			SAVE_CHAR(d->character);
-			
+
 			send_login_motd(d, GET_BAD_PWS(d->character));
-			
+
 			SEND_TO_Q("\r\n*** Press ENTER: ", d);
 			STATE(d) = CON_RMOTD;
 
@@ -2561,7 +2562,7 @@ void nanny(descriptor_data *d, char *arg) {
 			parse_archetype_menu(d, arg);
 			break;
 		}
-		
+
 		case CON_ARCHETYPE_CNFRM: {
 			if (is_abbrev(arg, "yes")) {
 				next_creation_step(d);
@@ -2574,26 +2575,26 @@ void nanny(descriptor_data *d, char *arg) {
 			}
 			break;
 		}
-		
+
 		case CON_PROMO_CODE: {
 			int promo = -1;
-			
+
 			skip_spaces(&arg);
 			if (!*arg) {
 				// skip entirely
 				set_creation_state(d, CON_REFERRAL);
 				return;
 			}
-			
+
 			for (iter = 0; *promo_codes[iter].code != '\n'; ++iter) {
 				if (!promo_codes[iter].expired && !str_cmp(arg, promo_codes[iter].code)) {
 					promo = iter;
 					break;
 				}
 			}
-			
+
 			GET_PROMO_ID(d->character) = promo;
-			
+
 			// pass off based on code validity
 			if (promo < 0) {
 				set_creation_state(d, CON_CONFIRM_PROMO_CODE);
@@ -2604,7 +2605,7 @@ void nanny(descriptor_data *d, char *arg) {
 			}
 			break;
 		}
-		
+
 		case CON_CONFIRM_PROMO_CODE: {
 			switch (LOWER(*arg)) {
 				case 'y': {
@@ -2627,7 +2628,7 @@ void nanny(descriptor_data *d, char *arg) {
 			if (PLR_FLAGGED(d->character, PLR_IPMASK)) {
 				strcpy(d->host, "masked");
 			}
-	
+
 			// READY TO ENTER THE GAME
 			if (!check_multiplaying(d)) {
 				SEND_TO_Q("\r\n\033[31mAccess Denied: Multiplaying detected\033[0m\r\n", d);
@@ -2644,53 +2645,53 @@ void nanny(descriptor_data *d, char *arg) {
 				STATE(d) = CON_GOODBYE;
 				return;
 			}
-			
+
 			if (LOWER(*arg) == 'i' && (IS_GOD(d->character) || IS_IMMORTAL(d->character))) {
 				GET_INVIS_LEV(d->character) = GET_ACCESS_LEVEL(d->character);
 			}
-			
+
 			// TODO most* of this block is repeated in do_alternate
 
 			// put them in-game
 			enter_player_game(d, TRUE, TRUE);
-			
+
 			msg_to_desc(d, "\r\n%s\r\n\r\n", config_get_string("welcome_message"));
 			act("$n has entered the game.", TRUE, d->character, 0, 0, TO_ROOM);
 
 			STATE(d) = CON_PLAYING;
-			
+
 			// needs newbie setup (gear, etc?)
 			if (PLR_FLAGGED(d->character, PLR_NEEDS_NEWBIE_SETUP)) {
 				start_new_character(d->character);
 				show_start = TRUE;
 			}
-			
+
 			if (AFF_FLAGGED(d->character, AFF_EARTHMELD)) {
 				msg_to_char(d->character, "You are earthmelded.\r\n");
 			}
 			else {
 				look_at_room(d->character);
 			}
-			
+
 			msg_to_char(d->character, "\r\n");	// leading \r\n between the look and the rest
-			
+
 			if (GET_LOYALTY(d->character) && EMPIRE_MOTD(GET_LOYALTY(d->character))) {
 				msg_to_char(d->character, "Empire MOTD:\r\n%s\r\n", EMPIRE_MOTD(GET_LOYALTY(d->character)));
 			}
-			
+
 			display_tip_to_char(d->character);
-			
+
 			if (GET_MAIL_PENDING(d->character)) {
 				send_to_char("&rYou have mail waiting.&0\r\n", d->character);
 			}
-			
+
 			if (!IS_APPROVED(d->character)) {
 				send_to_char(unapproved_login_message, d->character);
 			}
 			if (show_start) {
 				send_to_char(START_MESSG, d->character);
 			}
-			
+
 			d->has_prompt = 0;
 			break;
 		}
@@ -2700,7 +2701,7 @@ void nanny(descriptor_data *d, char *arg) {
 		case CON_BONUS_EXISTING: {
 			bool skip = FALSE;
 			i = 0;
-			
+
 			if (!str_cmp(arg, "skip")) {
 				skip = TRUE;
 			}
@@ -2714,30 +2715,30 @@ void nanny(descriptor_data *d, char *arg) {
 					SEND_TO_Q("\r\nInvalid trait choice. Try again > ", d);
 					return;
 				}
-			
+
 				// i is 1 over the value we want (menu is 1-based)
 				--i;
-			
+
 				if (HAS_BONUS_TRAIT(d->character, BIT(i))) {
 					SEND_TO_Q("\r\nYou already have that trait! Try again > ", d);
 					return;
 				}
-			
+
 				// seems ok
 				SET_BIT(GET_BONUS_TRAITS(d->character), BIT(i));
 			}
-			
+
 			// only apply now if they are NOT creating
 			if (STATE(d) != CON_BONUS_CREATION) {
 				void apply_bonus_trait(char_data *ch, bitvector_t trait, bool add);
-				
+
 				if (!skip) {
 					apply_bonus_trait(d->character, BIT(i), TRUE);
 				}
 
 				// and send them to the motd
 				send_login_motd(d, GET_BAD_PWS(d->character));
-				
+
 				SEND_TO_Q("\r\n*** Press ENTER: ", d);
 				STATE(d) = CON_RMOTD;
 			}
@@ -2745,7 +2746,7 @@ void nanny(descriptor_data *d, char *arg) {
 				// creating
 				next_creation_step(d);
 			}
-			
+
 			break;
 		}
 

@@ -350,6 +350,7 @@ extern int GET_MAX_BLOOD(char_data *ch);	// this one is different than the other
 #define IS_MAGE(ch)  (IS_NPC(ch) ? GET_MAX_MANA(ch) > 0 : (get_skill_level((ch), SKILL_NATURAL_MAGIC) > 0 || get_skill_level((ch), SKILL_HIGH_SORCERY) > 0))
 #define IS_OUTDOORS(ch)  IS_OUTDOOR_TILE(IN_ROOM(ch))
 #define IS_VAMPIRE(ch)  (IS_NPC(ch) ? MOB_FLAGGED((ch), MOB_VAMPIRE) : (get_skill_level((ch), SKILL_VAMPIRE) > 0))
+#define IS_LYCANTHROPE(ch) (IS_NPC(ch) ? MOB_FLAGGED((ch), MOB_LYCANTHROPE) : (get_skill_level((ch), SKILL_LYCANTHROPE) > 0))
 #define WOULD_EXECUTE(ch, vict)  (MOB_FLAGGED((vict), MOB_HARD | MOB_GROUP) || (IS_NPC(ch) ? (((ch)->master && !IS_NPC((ch)->master)) ? PRF_FLAGGED((ch)->master, PRF_AUTOKILL) : (!MOB_FLAGGED((ch), MOB_ANIMAL) || MOB_FLAGGED((ch), MOB_AGGRESSIVE | MOB_HARD | MOB_GROUP))) : PRF_FLAGGED((ch), PRF_AUTOKILL)))
 
 // helpers
@@ -1227,7 +1228,7 @@ void SET_ISLAND_ID(room_data *room, int island);	// formerly a #define and a roo
 #define LOWER(c)  (((c)>='A'  && (c) <= 'Z') ? ((c)+('a'-'A')) : (c))
 #define UPPER(c)  (((c)>='a'  && (c) <= 'z') ? ((c)+('A'-'a')) : (c) )
 
-#define ISNEWL(ch) ((ch) == '\n' || (ch) == '\r') 
+#define ISNEWL(ch) ((ch) == '\n' || (ch) == '\r')
 #define NULLSAFE(foo)  ((foo) ? (foo) : "")
 
 #define PLURAL(num)  ((num) != 1 ? "s" : "")
@@ -1526,7 +1527,7 @@ extern char *get_vehicle_name_by_proto(obj_vnum vnum);
 #define MIN(a, b)  ((a) < (b) ? (a) : (b))
 
 
-/* 
+/*
  * npc safeguard:
  * Accessing player specific data structures on a mobile is a very bad thing
  * to do.  Consider that changing these variables for a single mob will change
