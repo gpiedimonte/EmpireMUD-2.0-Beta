@@ -8,8 +8,7 @@ if (%random.2% == 2)
   %echo% %self.name% moos contentedly.
 else
   * We need the current terrain.
-  eval room %self.room%
-  if (%room.sector% == Plains)
+  if (%self.room.sector% == Plains)
     %echo% %self.name% eats some grass.
   else
     %echo% %self.name% chews %self.hisher% cud.
@@ -17,48 +16,21 @@ else
 end
 ~
 #9001
-Wolf Animation~
-0 bw 3
+Wolf Pack~
+0 n 100
 ~
-* This script is no longer used. It was replaced by custom strings.
-* Wolf Animation (9001-9003)
-* Time of day is important, can't have wolves howling at the sun...
-if ((%time.hour% < 7) && (%time.hour% > 19))
-  * Can't have wolves howling at the rain clouds either...
-  if (%weather% == clear)
-    %echo% self.name points %self.hisher% muzzle toward the sky and howls.
-  end
-else
-  if (%self.name% == a snarling wolf)
-    %echo% %self.name% looks directly at you, opens %self.hisher% mouth to show %self.hisher% fangs, and growls deep in %self.hisher% chest as %self.hisher% hackles stand on end...
-  else
-    switch (%random.4%)
-      case 1
-        * scratch
-        %echo% %self.name% scratches %self.hisher% ear with a hind foot.
-      break
-      case 2
-        * roll
-        %echo% %self.name% rolls around, all four paws in the air, making odd snorting sounds.
-      break
-      case 3
-        * Yawn
-        %echo% %self.name% yawns, showing off an impressive set of gleaming white fangs.
-      break
-      default
-        %echo% %self.name% pants, with %self.hisher% tongue hanging out and tail gently wagging.
-      break
-    done
-  end
-end
+set num %random.2%
+while %num% > 0
+  eval num %num% - 1
+  %load% mob 9003 ally
+done
 ~
 #9002
 Herd Cats~
 0 c 0
 herd~
 * test targeting me
-eval test %%actor.char_target(%arg.car%)%%
-if %test% != %self%
+if %actor.char_target(%arg.car%)% != %self%
   return 0
   halt
 end
@@ -72,19 +44,19 @@ Daily Quest Item Handout~
 ~
 if %questvnum% == 9009
   %load% obj 9010 %actor% inv
-  eval item %actor.inventory(9010)%
+  set item %actor.inventory(9010)%
   if %item%
     %send% %actor% The stablemaster gives you %item.shortdesc%.
   end
 elseif %questvnum% == 9033
   %load% obj 9034 %actor% inv
-  eval item %actor.inventory(9034)%
+  set item %actor.inventory(9034)%
   if %item%
     %send% %actor% The guildmaster gives you %item.shortdesc%.
   end
 elseif %questvnum% == 9030
   %load% obj 9031 %actor% inv
-  eval item %actor.inventory(9031)%
+  set item %actor.inventory(9031)%
   if %item%
     %send% %actor% The barkeep gives you %item.shortdesc%.
   end
@@ -103,7 +75,7 @@ elseif %questvnum% == 9036
       halt
     end
   end
-  eval last_quest_9036_time %timestamp%
+  set last_quest_9036_time %timestamp%
   remote last_quest_9036_time %actor.id%
   nop %actor.add_resources(9036, 5)%
   %send% %actor% The High Sorcerer gives you five enchanted trinkets.
@@ -119,8 +91,7 @@ if (%random.2% == 2)
   %echo% %self.name% baas contentedly.
 else
   * We need the current terrain.
-  eval room %self.room%
-  if (%room.sector% == Plains)
+  if (%self.room.sector% == Plains)
     %echo% %self.name% eats some grass.
   else
     %echo% %self.name% chews %self.hisher% cud.
@@ -133,9 +104,8 @@ Squirrel Animation~
 ~
 * This script is no longer used. It was replaced by custom strings.
 * Get current terrain.
-eval room %self.room%
 * If we are in forest, bombard players with acorns!
-if (%room.sector% ~= Forest)
+if (%self.room.sector% ~= Forest)
   %echo% %self.name% bombards you with acorns!
 end
 %echo% %self.name% chatters angrily at you for invading %self.hisher% territory!
@@ -150,8 +120,7 @@ if (%random.2% == 2)
   %echo% %self.name% moos contentedly.
 else
   * We need the current terrain.
-  eval room %self.room%
-  if (%room.sector% == Plains)
+  if (%self.room.sector% == Plains)
     %echo% %self.name% eats some grass.
   else
     %echo% %self.name% chews %self.hisher% cud.
@@ -233,19 +202,18 @@ switch (%random.8%)
   break
   case 5
     * Beg
-    eval room %self.room%
-    eval target %room.people%
+    set target %self.room.people%
     while (%target%)
-      eval obj %target.inventory()%
+      set obj %target.inventory()%
       while (%obj%)
         if (%obj.type% == FOOD)
           %send% %target% %self.name% looks at you with pleading in %self.hisher% eyes as though saying, "please, just one bite of %obj.shortdesc%, I haven't eaten in months."
           %echoaround% %target% %self.name% stares at %target.name%, %self.hisher% eyes tracking every move of %obj.shortdesc% as though %self.heshe% were hypnotized.
           halt
         end
-        eval obj %obj.next_in_list%
+        set obj %obj.next_in_list%
       done
-      eval target %target.next_in_room%
+      set target %target.next_in_room%
     done
   break
   case 6
@@ -254,7 +222,7 @@ switch (%random.8%)
   break
   case 7
     if (%weather% != clear)
-      %echo% %self.name% shakes vigorously showering you with doggy scented drops of water.
+      %echo% %self.name% shakes vigorously showering you with doggy-scented drops of water.
     end
   break
   default
@@ -325,15 +293,14 @@ switch (%random.3%)
     %echo% %self.name% leaps from the shadows and dashes across your path!
   break
   case 2
-    eval room %self.room%
-    if ((%room.sector% == Plains) || (%room.sector% /= Garden))
+    if ((%self.room.sector% == Plains) || (%self.room.sector% /= Garden))
       %echo% %self.name% spots a butterfly and immediately gives chase!
     else
       %echo% %self.name% meows.
     end
   break
   default
-    eval target %random.char%
+    set target %random.char%
     if (%target.is_pc%)
       %send% %target% %self.name% rubs against your legs and purrs.
       %echoaround% %target% %self.name% walks in circles around %target.name%, rubbing against %target.hisher% legs and purring.
@@ -349,8 +316,7 @@ Eagle Animation~
 ~
 * This script is no longer used. It was replaced by custom strings.
 * Eagle Animation (9025)
-eval room %self.room%
-if (%room.sector% == River)
+if (%self.room.sector% == River)
   %echo% %self.name% dives into the water, then emerges with a fish.
   halt
 end
@@ -366,18 +332,92 @@ switch (%random.3)
   break
 done
 ~
+#9027
+Feed to Tame: Fruit/Veg/Grain~
+0 j 100
+~
+* Amount of tameness required
+set target 5
+if %actor.cooldown(9027)%
+  %send% %actor% You can't feed wild animals again yet...
+  return 0
+  halt
+end
+nop %actor.set_cooldown(9027, 5)%
+wait 3
+if !%object.is_component(fruit)% && !%object.is_component(vegetable)% && !%object.is_component(grain)%
+  %echo% %self.name% does not seem interested.
+  drop all
+  halt
+end
+* Block NPCs
+if %actor.is_npc%
+  halt
+end
+* Load tameness
+if %self.varexists(tameness)%
+  set tameness %self.tameness%
+else
+  set tameness 0
+end
+eval tameness %tameness% + 1
+if %actor.charisma% > %random.10%
+  eval tameness %tameness% + 1
+end
+remote tameness %self.id%
+* Messaging
+if %self.name% ~= horse
+  set emotion and nickers
+elseif %self.name% ~= elephant
+  set emotion and trumpets happily
+else
+  set emotion and chews contentedly
+end
+%echo% %self.name% eats %object.shortdesc% %emotion%.
+if %tameness% >= %target%
+  %send% %actor% %self.heshe% really seems to like you.
+  %echoaround% %actor% %self.heshe% really seems to like %actor.name%.
+end
+mjunk all
+~
+#9028
+Tameness Required to Tame~
+0 c 0
+tame~
+* Amount of tameness required
+set target 5
+* Check target and tech
+if (!%actor.has_tech(Tame)% || %actor.char_target(%arg%)% != %self%)
+  return 0
+  halt
+end
+* Skill checks / load tameness
+if %actor.ability(Summon Animals)%
+  set tameness %target%
+  %send% %actor% You whistle at %self.name%...
+  %echoaround% %actor% %actor.name% whistles at %self.name%...
+elseif %self.varexists(tameness)%
+  set tameness %self.tameness%
+else
+  set tameness 0
+end
+if %tameness% < %target%
+  %send% %actor% You can't seem to get close enough to %self.name% to tame %self.himher%. Try feeding %self.himher% some fruit.
+  return 1
+  halt
+else
+  * Ok to tame
+  return 0
+  halt
+end
+~
 #9030
 Butcher detect~
 1 c 3
 butcher~
-eval target %%actor.obj_target(%arg%)%%
+set target %actor.obj_target(%arg%)%
 if !%target%
   * Invalid target
-  return 0
-  halt
-end
-if !%actor.ability(butcher)%
-  * Player does not have butcher
   return 0
   halt
 end
@@ -387,7 +427,7 @@ if %test% != *CORPSE && %test%
   halt
 end
 if %target.val0%
-  eval mob_vnum %target.val0%
+  set mob_vnum %target.val0%
 else
   * Probably not really a corpse
   return 0
@@ -412,7 +452,7 @@ if %actor.inventory(9030)% || !%actor.on_quest(9030)%
 end
 %send% %actor% You cut the head off %target.shortdesc%...
 %load% obj 9030 %actor% inv
-eval item %actor.inventory()%
+set item %actor.inventory()%
 if %item%
   %send% %actor% You get %item.shortdesc%!
 end
@@ -424,7 +464,7 @@ halt
 Fake pickpocket~
 1 c 2
 pickpocket~
-eval target %%actor.char_target(%arg%)%%
+set target %actor.char_target(%arg%)%
 if !%target%
   * Invalid target
   return 0
@@ -462,7 +502,7 @@ else
   %send% %actor% You pick %target.name%'s pocket...
   nop %target.add_mob_flag(*PICKPOCKETED)%
   %load% obj 9033 %actor% inv
-  eval item %actor.inventory()%
+  set item %actor.inventory()%
   %send% %actor% You find %item.shortdesc%!
   return 1
   halt
@@ -494,15 +534,15 @@ if %abilityname% != Disenchant
   return 1
   halt
 end
-eval done 1
-eval obj %actor.inventory()%
+set done 1
+set obj %actor.inventory()%
 while %obj%
   if %obj.vnum% == 9036
     if %obj.is_flagged(ENCHANTED)% && %obj% != %self%
-      eval done 0
+      set done 0
     end
   end
-  eval obj %obj.next_in_list%
+  set obj %obj.next_in_list%
 done
 if %done%
   %quest% %actor% trigger 9036
@@ -515,38 +555,41 @@ Postmaster quest start~
 ~
 eval vnum 9041+%random.3%
 %load% obj %vnum% %actor% inv
-eval item %%actor.inventory(%vnum%)%%
+set item %actor.inventory(%vnum%)%
 %send% %actor% You receive %item.shortdesc%.
 ~
 #9043
 Postmaster daily letter delivery~
 1 i 100
 ~
-eval recipient 0
 switch %self.vnum%
   case 9042
-    * Smith
-    eval recipient 212
+    * Smith / Forgemaster
+    if %victim.vnum% == 212 || %victim.vnum% == 278
+      set found 1
+    end
   break
   case 9043
     * High Sorcerer
-    eval recipient 228
+    if %victim.vnum% == 228
+      set found 1
+    end
   break
   case 9044
     * Alchemist
-    eval recipient 231
+    if %victim.vnum% == 231
+      set found 1
+    end
   break
 done
-eval person %victim%
-eval found (%person.vnum% == %recipient% && %person.empire% == %actor.empire%)
-eval wrong_empire %person.vnum% == %recipient% && %person.empire% != %actor.empire%
-if %found%
-  %send% %actor% You give the letter to %person.name%.
+eval wrong_empire %victim.vnum% == %recipient% && %victim.empire% != %actor.empire%
+if %found% && !%wrong_empire%
+  %send% %actor% You give the letter to %victim.name%.
   %quest% %actor% trigger 9042
   return 1
   %purge% %self%
-elseif %wrong_empire%
-  %send% %actor% %person.name% does not belong to your empire.
+elseif %found% && %wrong_empire%
+  %send% %actor% %victim.name% does not belong to your empire.
   return 0
   halt
 else
@@ -554,6 +597,20 @@ else
   return 0
   halt
 end
+~
+#9061
+Hypnotoad fight~
+0 k 75
+~
+wait 1
+if (!%actor% || %actor.room% != %self.room%)
+  halt
+end
+dg_affect #9061 %actor% STUNNED on 15
+%send% %actor% You lock eyes with %self.name% and black out for a moment...
+%echoaround% %actor% %actor.name% locks eyes with %self.name% and appears dazed...
+wait 1
+flee
 ~
 #9064
 Wandering Vampire combat~
@@ -572,20 +629,20 @@ end
 %send% %actor% %self.name% lunges forward and sinks %self.hisher% teeth into your shoulder!
 %echoaround% %actor% %self.name% lunges forward and sinks %self.hisher% teeth into %actor.name%'s shoulder!
 eval healthprct %actor.health% * 100 / %actor.maxhealth%
-eval can_turn 1
+set can_turn 1
 if %healthprct% > 50 || %actor.aff_flagged(!VAMPIRE)% || %actor.vampire()%
   * Too much health left, or immune to vampirism
-  eval can_turn 0
+  set can_turn 0
 end
 if %actor.is_pc%
   if %actor.nohassle%
     * PC is immune to vampirism (rare)
-    eval can_turn 0
+    set can_turn 0
   end
 else
   if !%actor.mob_flagged(HUMAN)% || %actor.mob_flagged(GROUP)% || %actor.mob_flagged(HARD)%
     * NPC is immune to vampirism (at least from this)
-    eval can_turn 0
+    set can_turn 0
   end
 end
 if %can_turn%
@@ -603,5 +660,48 @@ if %can_turn%
 else
   %damage% %actor% 25
 end
+~
+#9066
+Nerf bat random debuffs~
+0 bw 15
+~
+set effect %random.4%
+switch %effect%
+  case 1
+    %echo% %self.name% brushes you with its wings. and you feel lethargic.
+  break
+  case 2
+    %echo% %self.name% squeaks, and you feel your strength desert you.
+  end
+  case 3
+    %echo% %self.name% scratches you with a claw, and you feel fragile.
+  break
+  case 4
+    %echo% %self.name% bats at you with its wing, and you feel clumsy.
+  break
+done
+set person %self.room.people%
+while %person%
+  if %person.is_pc%
+    switch %effect%
+      case 1
+        dg_affect #9066 %person% SLOW on 120
+      break
+      case 2
+        dg_affect #9066 %person% BONUS-PHYSICAL -10 120
+        dg_affect #9066 %person% BONUS-MAGICAL -10 120
+      break
+      case 3
+        dg_affect #9066 %person% RESIST-PHYSICAL -10 120
+        dg_affect #9066 %person% RESIST-MAGICAL -10 120
+      break
+      case 4
+        dg_affect #9066 %person% TO-HIT -25 120
+        dg_affect #9066 %person% DODGE -25 120
+      break
+    done
+  end
+  set person %person.next_in_room%
+done
 ~
 $

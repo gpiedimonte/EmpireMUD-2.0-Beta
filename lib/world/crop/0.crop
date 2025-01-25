@@ -16,6 +16,7 @@ D0
 ;;;;~
 &Y~
 I 6 3003 100.00 1  # FORAGE: a handful of grain
+I 8 3342 100.00 1  # HARVEST: a bale of straw
 I 8 141 20.00 2 H  # HARVEST: a bundle of wheat
 I 8 141 20.00 3 H  # HARVEST: a bundle of wheat
 I 8 141 20.00 4 H  # HARVEST: a bundle of wheat
@@ -24,19 +25,19 @@ I 8 141 20.00 6 H  # HARVEST: a bundle of wheat
 M
 9134 5.00 bdh
 M
-9037 5.00 dh
+9037 5.00 ceh
 M
-9038 5.00 dh
+9038 5.00 ceh
 M
-9036 5.00 dh
+9036 5.00 ceh
 M
 9120 15.00 adg
 M
-9039 5.00 dg
+9039 5.00 ceg
 M
-9035 5.00 dg
+9035 5.00 ceg
 M
-9033 5.00 dg
+9033 5.00 ceg
 M
 250 0.10 ad
 M
@@ -48,17 +49,23 @@ M
 M
 9153 10.00 d
 M
-9024 5.00 d
+9024 5.00 ce
 M
 9023 10.00 d
 M
-9034 5.00 d
+9034 5.00 ce
+M
+9028 10.00 bdg
+M
+9041 10.00 bdh
 M
 9133 10.00 ad
 M
 9116 5.00 ad
 M
-9022 20.00 ad
+9022 20.00 ace
+M
+9015 20.00 ad
 M
 9032 10.00 bd
 M
@@ -70,9 +77,9 @@ M
 M
 9025 5.00 bd
 M
-9011 10.00 bd
+9011 10.00 bce
 M
-9021 10.00 bd
+9044 1.00 bdh
 M
 9020 5.00 bd
 M
@@ -80,13 +87,15 @@ M
 M
 9152 5.00 bd
 M
-9009 10.00 bd
+9009 10.00 bce
 M
 9012 10.00 bd
 M
-9010 10.00 bd
+9010 10.00 bce
 M
-9004 10.00 bd
+9004 10.00 bce
+M
+9014 10.00 bd
 S
 #2
 corn~
@@ -97,6 +106,7 @@ D0
 iiii~
 &g~
 I 6 3003 100.00 1  # FORAGE: a handful of grain
+I 8 3342 100.00 1  # HARVEST: a bale of straw
 I 8 3005 20.00 2 H  # HARVEST: a bushel of corn
 I 8 3005 20.00 3 H  # HARVEST: a bushel of corn
 I 8 3005 20.00 4 H  # HARVEST: a bushel of corn
@@ -105,19 +115,19 @@ I 8 3005 20.00 6 H  # HARVEST: a bushel of corn
 M
 9134 5.00 bdh
 M
-9037 5.00 dh
+9037 5.00 ceh
 M
-9038 5.00 dh
+9038 5.00 ceh
 M
-9036 5.00 dh
+9036 5.00 ceh
 M
 9120 15.00 adg
 M
-9039 5.00 dg
+9039 5.00 ceg
 M
-9035 5.00 dg
+9035 5.00 ceg
 M
-9033 5.00 dg
+9033 5.00 ceg
 M
 250 0.10 ad
 M
@@ -129,17 +139,23 @@ M
 M
 9153 10.00 d
 M
-9024 5.00 d
+9024 5.00 ce
 M
 9023 10.00 d
 M
-9034 5.00 d
+9034 5.00 ce
+M
+9028 10.00 bdg
+M
+9041 10.00 bdh
 M
 9133 10.00 ad
 M
 9116 5.00 ad
 M
-9022 20.00 ad
+9022 20.00 ace
+M
+9015 20.00 ad
 M
 9032 10.00 bd
 M
@@ -151,9 +167,9 @@ M
 M
 9025 5.00 bd
 M
-9011 10.00 bd
+9011 10.00 bce
 M
-9021 10.00 bd
+9044 1.00 bdh
 M
 9020 5.00 bd
 M
@@ -161,13 +177,15 @@ M
 M
 9152 5.00 bd
 M
-9009 10.00 bd
+9009 10.00 bce
 M
 9012 10.00 bd
 M
-9010 10.00 bd
+9010 10.00 bce
 M
-9004 10.00 bd
+9004 10.00 bce
+M
+9014 10.00 bd
 S
 #3
 hops~
@@ -186,19 +204,19 @@ I 8 143 20.00 6 H  # HARVEST: a bushel of hops
 M
 9134 5.00 bdh
 M
-9037 5.00 dh
+9037 5.00 ceh
 M
-9038 5.00 dh
+9038 5.00 ceh
 M
-9036 5.00 dh
+9036 5.00 ceh
 M
 9120 15.00 adg
 M
-9039 5.00 dg
+9039 5.00 ceg
 M
-9035 5.00 dg
+9035 5.00 ceg
 M
-9033 5.00 dg
+9033 5.00 ceg
 M
 250 0.10 ad
 M
@@ -210,17 +228,23 @@ M
 M
 9153 10.00 d
 M
-9024 5.00 d
+9024 5.00 ce
 M
 9023 10.00 d
 M
-9034 5.00 d
+9034 5.00 ce
+M
+9028 10.00 bdg
+M
+9041 10.00 bdh
 M
 9133 10.00 ad
 M
 9116 5.00 ad
 M
-9022 20.00 ad
+9022 20.00 ace
+M
+9015 20.00 ad
 M
 9032 10.00 bd
 M
@@ -232,9 +256,9 @@ M
 M
 9025 5.00 bd
 M
-9011 10.00 bd
+9011 10.00 bce
 M
-9021 10.00 bd
+9044 1.00 bdh
 M
 9020 5.00 bd
 M
@@ -242,13 +266,15 @@ M
 M
 9152 5.00 bd
 M
-9009 10.00 bd
+9009 10.00 bce
 M
 9012 10.00 bd
 M
-9010 10.00 bd
+9010 10.00 bce
 M
-9004 10.00 bd
+9004 10.00 bce
+M
+9014 10.00 bd
 S
 #4
 cotton~
@@ -278,7 +304,9 @@ M
 M
 9119 5.00 d
 M
-9026 15.00 d
+9026 15.00 bce
+M
+9027 15.00 bd
 M
 9123 5.00 d
 M
@@ -299,6 +327,10 @@ M
 9122 5.00 bd
 M
 9125 5.00 bd
+M
+9042 5.00 d
+M
+9044 1.00 bdh
 S
 #5
 barley~
@@ -309,6 +341,7 @@ D0
 ::::~
 &Y~
 I 6 3003 100.00 1  # FORAGE: a handful of grain
+I 8 3342 100.00 1  # HARVEST: a bale of straw
 I 8 145 20.00 2 H  # HARVEST: a sack of barley
 I 8 145 20.00 3 H  # HARVEST: a sack of barley
 I 8 145 20.00 4 H  # HARVEST: a sack of barley
@@ -317,19 +350,19 @@ I 8 145 20.00 6 H  # HARVEST: a sack of barley
 M
 9134 5.00 bdh
 M
-9037 5.00 dh
+9037 5.00 ceh
 M
-9038 5.00 dh
+9038 5.00 ceh
 M
-9036 5.00 dh
+9036 5.00 ceh
 M
 9120 15.00 adg
 M
-9039 5.00 dg
+9039 5.00 ceg
 M
-9035 5.00 dg
+9035 5.00 ceg
 M
-9033 5.00 dg
+9033 5.00 ceg
 M
 250 0.10 ad
 M
@@ -341,17 +374,23 @@ M
 M
 9153 10.00 d
 M
-9024 5.00 d
+9024 5.00 ce
 M
 9023 10.00 d
 M
-9034 5.00 d
+9034 5.00 ce
+M
+9028 10.00 bdg
+M
+9041 10.00 bdh
 M
 9133 10.00 ad
 M
 9116 5.00 ad
 M
-9022 20.00 ad
+9022 20.00 ace
+M
+9015 20.00 ad
 M
 9032 10.00 bd
 M
@@ -363,9 +402,9 @@ M
 M
 9025 5.00 bd
 M
-9011 10.00 bd
+9011 10.00 bce
 M
-9021 10.00 bd
+9044 1.00 bdh
 M
 9020 5.00 bd
 M
@@ -373,13 +412,15 @@ M
 M
 9152 5.00 bd
 M
-9009 10.00 bd
+9009 10.00 bce
 M
 9012 10.00 bd
 M
-9010 10.00 bd
+9010 10.00 bce
 M
-9004 10.00 bd
+9004 10.00 bce
+M
+9014 10.00 bd
 S
 #6
 peaches~
@@ -418,26 +459,26 @@ o^^^~
 &Y~
 I 6 3006 100.00 1  # FORAGE: a plump peach
 I 8 3004 100.00 1  # HARVEST: a basket of peaches
-I 9 121 100.00 1  # GATHER: a stick
+I 9 121 100.00 1  # GATHER: some sticks and leaves
 I 20 120 100.00 1  # CHOP: a large tree
 M
 9145 5.00 adh
 M
-9037 5.00 dh
+9037 5.00 ceh
 M
-9038 5.00 dh
+9038 5.00 ceh
 M
-9036 5.00 dh
+9036 5.00 ceh
 M
 9141 5.00 dg
 M
 9144 5.00 adg
 M
-9039 5.00 dg
+9039 5.00 ceg
 M
-9035 5.00 dg
+9035 5.00 ceg
 M
-9033 5.00 dg
+9033 5.00 ceg
 M
 250 0.10 ad
 M
@@ -449,23 +490,29 @@ M
 M
 9153 10.00 d
 M
-9021 10.00 d
+9044 1.00 bdh
 M
-9024 5.00 d
+9024 5.00 ce
 M
-9034 5.00 d
+9034 5.00 ce
 M
-9011 10.00 d
+9028 10.00 bdg
 M
-9010 10.00 d
+9041 10.00 bdh
+M
+9011 10.00 bce
+M
+9010 10.00 bce
 M
 9154 5.00 bd
 M
 9152 5.00 bd
 M
-9009 10.00 d
+9009 10.00 bce
 M
-9004 10.00 d
+9004 10.00 bce
+M
+9014 10.00 bd
 M
 9012 10.00 d
 M
@@ -483,7 +530,9 @@ M
 M
 9116 5.00 ad
 M
-9022 5.00 ad
+9022 5.00 ace
+M
+9015 5.00 ad
 M
 9032 5.00 bd
 M
@@ -534,26 +583,26 @@ D0
 &Y~
 I 6 3007 100.00 1  # FORAGE: a couple red cherries
 I 8 3008 100.00 1  # HARVEST: a bag of cherries
-I 9 121 100.00 1  # GATHER: a stick
+I 9 121 100.00 1  # GATHER: some sticks and leaves
 I 20 120 100.00 1  # CHOP: a large tree
 M
 9145 5.00 adh
 M
-9037 5.00 dh
+9037 5.00 ceh
 M
-9038 5.00 dh
+9038 5.00 ceh
 M
-9036 5.00 dh
+9036 5.00 ceh
 M
 9141 5.00 dg
 M
 9144 5.00 adg
 M
-9039 5.00 dg
+9039 5.00 ceg
 M
-9035 5.00 dg
+9035 5.00 ceg
 M
-9033 5.00 dg
+9033 5.00 ceg
 M
 250 0.10 ad
 M
@@ -565,23 +614,29 @@ M
 M
 9153 10.00 d
 M
-9021 10.00 d
+9044 1.00 bdh
 M
-9024 5.00 d
+9024 5.00 ce
 M
-9034 5.00 d
+9034 5.00 ce
 M
-9011 10.00 d
+9028 10.00 bdg
 M
-9010 10.00 d
+9041 10.00 bdh
+M
+9011 10.00 bce
+M
+9010 10.00 bce
 M
 9154 5.00 bd
 M
 9152 5.00 bd
 M
-9009 10.00 d
+9009 10.00 bce
 M
-9004 10.00 d
+9004 10.00 bce
+M
+9014 10.00 bd
 M
 9012 10.00 d
 M
@@ -599,7 +654,9 @@ M
 M
 9116 5.00 ad
 M
-9022 5.00 ad
+9022 5.00 ace
+M
+9015 5.00 ad
 M
 9032 5.00 bd
 M
@@ -632,7 +689,7 @@ D0
 &y~
 I 6 3009 100.00 1  # FORAGE: an orange
 I 8 3010 100.00 1  # HARVEST: a sack of oranges
-I 9 121 100.00 1  # GATHER: a stick
+I 9 132 100.00 1  # GATHER: some thorny branches
 I 20 122 50.00 1 c  # CHOP: some rough wood
 I 20 122 50.00 2 c  # CHOP: some rough wood
 M
@@ -650,7 +707,9 @@ M
 M
 9119 5.00 d
 M
-9026 15.00 d
+9026 15.00 bce
+M
+9027 15.00 bd
 M
 9123 5.00 d
 M
@@ -671,6 +730,10 @@ M
 9122 5.00 bd
 M
 9125 5.00 bd
+M
+9042 5.00 d
+M
+9044 1.00 bdh
 S
 #9
 rice~
@@ -681,6 +744,7 @@ D0
 ,,,,~
 &g~
 I 6 3003 100.00 1  # FORAGE: a handful of grain
+I 8 3342 100.00 1  # HARVEST: a bale of straw
 I 8 3011 20.00 2 H  # HARVEST: a sack of dried rice
 I 8 3011 20.00 3 H  # HARVEST: a sack of dried rice
 I 8 3011 20.00 4 H  # HARVEST: a sack of dried rice
@@ -689,19 +753,19 @@ I 8 3011 20.00 6 H  # HARVEST: a sack of dried rice
 M
 9134 5.00 bdh
 M
-9037 5.00 dh
+9037 5.00 ceh
 M
-9038 5.00 dh
+9038 5.00 ceh
 M
-9036 5.00 dh
+9036 5.00 ceh
 M
 9120 15.00 adg
 M
-9039 5.00 dg
+9039 5.00 ceg
 M
-9035 5.00 dg
+9035 5.00 ceg
 M
-9033 5.00 dg
+9033 5.00 ceg
 M
 250 0.10 ad
 M
@@ -713,17 +777,23 @@ M
 M
 9153 10.00 d
 M
-9024 5.00 d
+9024 5.00 ce
 M
 9023 10.00 d
 M
-9034 5.00 d
+9034 5.00 ce
+M
+9028 10.00 bdg
+M
+9041 10.00 bdh
 M
 9133 10.00 ad
 M
 9116 5.00 ad
 M
-9022 20.00 ad
+9022 20.00 ace
+M
+9015 20.00 ad
 M
 9032 10.00 bd
 M
@@ -735,9 +805,9 @@ M
 M
 9025 5.00 bd
 M
-9011 10.00 bd
+9011 10.00 bce
 M
-9021 10.00 bd
+9044 1.00 bdh
 M
 9020 5.00 bd
 M
@@ -745,13 +815,15 @@ M
 M
 9152 5.00 bd
 M
-9009 10.00 bd
+9009 10.00 bce
 M
 9012 10.00 bd
 M
-9010 10.00 bd
+9010 10.00 bce
 M
-9004 10.00 bd
+9004 10.00 bce
+M
+9014 10.00 bd
 S
 #10
 olives~
@@ -772,7 +844,7 @@ D0
 &y~
 I 6 3018 100.00 1  # FORAGE: a couple of olives
 I 8 3019 100.00 1  # HARVEST: a basket of olives
-I 9 121 100.00 1  # GATHER: a stick
+I 9 132 100.00 1  # GATHER: some thorny branches
 I 20 122 50.00 1 c  # CHOP: some rough wood
 I 20 122 50.00 2 c  # CHOP: some rough wood
 M
@@ -790,7 +862,9 @@ M
 M
 9119 5.00 d
 M
-9026 15.00 d
+9026 15.00 bce
+M
+9027 15.00 bd
 M
 9123 5.00 d
 M
@@ -811,6 +885,10 @@ M
 9122 5.00 bd
 M
 9125 5.00 bd
+M
+9042 5.00 d
+M
+9044 1.00 bdh
 S
 #11
 peas~
@@ -829,19 +907,19 @@ I 8 3021 20.00 6 H  # HARVEST: a basket of peas
 M
 9134 5.00 bdh
 M
-9037 5.00 dh
+9037 5.00 ceh
 M
-9038 5.00 dh
+9038 5.00 ceh
 M
-9036 5.00 dh
+9036 5.00 ceh
 M
 9120 15.00 adg
 M
-9039 5.00 dg
+9039 5.00 ceg
 M
-9035 5.00 dg
+9035 5.00 ceg
 M
-9033 5.00 dg
+9033 5.00 ceg
 M
 250 0.10 ad
 M
@@ -853,17 +931,23 @@ M
 M
 9153 10.00 d
 M
-9024 5.00 d
+9024 5.00 ce
 M
 9023 10.00 d
 M
-9034 5.00 d
+9034 5.00 ce
+M
+9028 10.00 bdg
+M
+9041 10.00 bdh
 M
 9133 10.00 ad
 M
 9116 5.00 ad
 M
-9022 20.00 ad
+9022 20.00 ace
+M
+9015 20.00 ad
 M
 9032 10.00 bd
 M
@@ -875,9 +959,9 @@ M
 M
 9025 5.00 bd
 M
-9011 10.00 bd
+9011 10.00 bce
 M
-9021 10.00 bd
+9044 1.00 bdh
 M
 9020 5.00 bd
 M
@@ -885,40 +969,42 @@ M
 M
 9152 5.00 bd
 M
-9009 10.00 bd
+9009 10.00 bce
 M
 9012 10.00 bd
 M
-9010 10.00 bd
+9010 10.00 bce
 M
-9004 10.00 bd
+9004 10.00 bce
+M
+9014 10.00 bd
 S
 #12
-gourds~
-A Field of Gourds~
+squash~
+A Field of Squash Vines~
 23 1 a
 0 50 63 36
 D0
 oooo~
 &y~
 I 6 3022 100.00 1  # FORAGE: a yellow squash
-I 8 3023 100.00 2  # HARVEST: a basket of gourds
+I 8 3023 100.00 2  # HARVEST: a basket of squash
 M
 9134 5.00 bdh
 M
-9037 5.00 dh
+9037 5.00 ceh
 M
-9038 5.00 dh
+9038 5.00 ceh
 M
-9036 5.00 dh
+9036 5.00 ceh
 M
 9120 15.00 adg
 M
-9039 5.00 dg
+9039 5.00 ceg
 M
-9035 5.00 dg
+9035 5.00 ceg
 M
-9033 5.00 dg
+9033 5.00 ceg
 M
 250 0.10 ad
 M
@@ -930,17 +1016,23 @@ M
 M
 9153 10.00 d
 M
-9024 5.00 d
+9024 5.00 ce
 M
 9023 10.00 d
 M
-9034 5.00 d
+9034 5.00 ce
+M
+9028 10.00 bdg
+M
+9041 10.00 bdh
 M
 9133 10.00 ad
 M
 9116 5.00 ad
 M
-9022 20.00 ad
+9022 20.00 ace
+M
+9015 20.00 ad
 M
 9032 10.00 bd
 M
@@ -952,9 +1044,9 @@ M
 M
 9025 5.00 bd
 M
-9011 10.00 bd
+9011 10.00 bce
 M
-9021 10.00 bd
+9044 1.00 bdh
 M
 9020 5.00 bd
 M
@@ -962,13 +1054,15 @@ M
 M
 9152 5.00 bd
 M
-9009 10.00 bd
+9009 10.00 bce
 M
 9012 10.00 bd
 M
-9010 10.00 bd
+9010 10.00 bce
 M
-9004 10.00 bd
+9004 10.00 bce
+M
+9014 10.00 bd
 S
 #13
 apples~
@@ -1007,26 +1101,26 @@ D0
 &Y~
 I 6 3001 100.00 1  # FORAGE: a green apple
 I 8 3002 100.00 1  # HARVEST: a bunch of apples
-I 9 121 100.00 1  # GATHER: a stick
+I 9 121 100.00 1  # GATHER: some sticks and leaves
 I 20 120 100.00 1  # CHOP: a large tree
 M
 9145 5.00 adh
 M
-9037 5.00 dh
+9037 5.00 ceh
 M
-9038 5.00 dh
+9038 5.00 ceh
 M
-9036 5.00 dh
+9036 5.00 ceh
 M
 9141 5.00 dg
 M
 9144 5.00 adg
 M
-9039 5.00 dg
+9039 5.00 ceg
 M
-9035 5.00 dg
+9035 5.00 ceg
 M
-9033 5.00 dg
+9033 5.00 ceg
 M
 250 0.10 ad
 M
@@ -1038,23 +1132,29 @@ M
 M
 9153 10.00 d
 M
-9021 10.00 d
+9044 1.00 bdh
 M
-9024 5.00 d
+9024 5.00 ce
 M
-9034 5.00 d
+9034 5.00 ce
 M
-9011 10.00 d
+9028 10.00 bdg
 M
-9010 10.00 d
+9041 10.00 bdh
+M
+9011 10.00 bce
+M
+9010 10.00 bce
 M
 9154 5.00 bd
 M
 9152 5.00 bd
 M
-9009 10.00 d
+9009 10.00 bce
 M
-9004 10.00 d
+9004 10.00 bce
+M
+9014 10.00 bd
 M
 9012 10.00 d
 M
@@ -1072,7 +1172,9 @@ M
 M
 9116 5.00 ad
 M
-9022 5.00 ad
+9022 5.00 ace
+M
+9015 5.00 ad
 M
 9032 5.00 bd
 M
@@ -1131,7 +1233,7 @@ M
 M
 9107 10.00 dg
 M
-9101 1.00 dg
+9043 1.00 bdg
 M
 9112 5.00 bdg
 M
@@ -1151,20 +1253,20 @@ M
 M
 240 6.00 bc
 M
-9039 5.00 cg
+9039 5.00 ceg
 M
-9035 5.00 cg
+9035 5.00 ceg
 M
 9153 10.00 bc
 M
-9033 5.00 cg
+9033 5.00 ceg
 M
-9037 5.00 ch
+9037 5.00 ceh
 M
-9038 5.00 ch
+9038 5.00 ceh
 M
-9036 5.00 ch
+9036 5.00 ceh
 M
-9034 5.00 c
+9034 5.00 ce
 S
 $

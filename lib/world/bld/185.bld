@@ -32,6 +32,7 @@ R
 R
 3 1 1 0
 T 18521
+T 18517
 S
 #18502
 Overgrown Chamber~
@@ -149,7 +150,7 @@ pyramid has collapsed, blocking access to the interior.
 M
 244 20.00 c
 R
-16 1 1 0
+16 1 1 1048576
 R
 19 1 1 0
 R

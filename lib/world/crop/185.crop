@@ -10,8 +10,8 @@ D0
 ^^&o0&?^~
 &G~
 I 6 18501 100.00 1  # FORAGE: a single papaya
-I 8 18500 20.00 1  # HARVEST: a basket of papayas
-I 9 121 100.00 1  # GATHER: a stick
+I 8 18500 100.00 1  # HARVEST: a basket of papayas
+I 9 133 100.00 1  # GATHER: a tangle of vines
 I 20 128 100.00 1  # CHOP: a massive jungle tree
 M
 9061 0.01 d
@@ -44,7 +44,7 @@ M
 M
 9107 10.00 dg
 M
-9101 1.00 dg
+9043 1.00 bdg
 M
 9112 5.00 bdg
 M
@@ -64,20 +64,20 @@ M
 M
 240 6.00 bc
 M
-9039 5.00 cg
+9039 5.00 ceg
 M
-9035 5.00 cg
+9035 5.00 ceg
 M
 9153 10.00 bc
 M
-9033 5.00 cg
+9033 5.00 ceg
 M
-9037 5.00 ch
+9037 5.00 ceh
 M
-9038 5.00 ch
+9038 5.00 ceh
 M
-9036 5.00 ch
+9036 5.00 ceh
 M
-9034 5.00 c
+9034 5.00 ce
 S
 $

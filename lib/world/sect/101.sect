@@ -35,14 +35,15 @@ E
 4 0 1.00 8
 E
 9 0 100.00 8
+I 5 106 8.00 1 X  # DIG: a rough piece of obsidian
 I 5 104 17.00 1 X  # DIG: a red bloodstone
-I 5 100 83.00 1 X  # DIG: a rock
+I 5 100 100.00 1 X  # DIG: a rock
 M
 9060 0.05 d
 M
 9143 10.00 dh
 M
-9142 10.00 dh
+9045 10.00 dh
 M
 9017 5.00 dg
 M

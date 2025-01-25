@@ -35,7 +35,7 @@
  */
 #define NO_EXTRANEOUS_TRIGGERS
 
-/* mob trigger types */
+// MTRIG_x: mob trigger types
 #define MTRIG_GLOBAL           BIT(0)      // check even if no players nearby
 #define MTRIG_RANDOM           BIT(1)      /* checked randomly           */
 #define MTRIG_COMMAND          BIT(2)	   /* character types a command  */
@@ -60,9 +60,11 @@
 #define MTRIG_FINISH_QUEST     BIT(21)	// player tries to end a quest
 #define MTRIG_PLAYER_IN_ROOM   BIT(22)	// modifies some triggers to "only with players in the room"
 #define MTRIG_REBOOT           BIT(23)	// after the mud reboots
+#define MTRIG_BUY              BIT(24)	// attempting a purchase
+#define MTRIG_KILL             BIT(25)	// mob has killed something
 
 
-/* obj trigger types */
+// OTRIG_x: obj trigger types
 #define OTRIG_GLOBAL           BIT(0)	// NOT actually used, currently
 #define OTRIG_RANDOM           BIT(1)	     /* checked randomly           */
 #define OTRIG_COMMAND          BIT(2)      /* character types a command  */
@@ -85,6 +87,8 @@
 #define OTRIG_FINISH_QUEST     BIT(21)	// player tries to end a quest
 #define OTRIG_PLAYER_IN_ROOM   BIT(22)	// NOT actually used, currently
 #define OTRIG_REBOOT           BIT(23)	// after the mud reboots
+#define OTRIG_BUY              BIT(24)	// attempting a purchase
+#define OTRIG_KILL             BIT(25)	// obj's owner has killed something
 
 
 // VTRIG_x: vehicle trigger types
@@ -106,9 +110,11 @@
 #define VTRIG_FINISH_QUEST     BIT(21)	// player tries to end a quest
 #define VTRIG_PLAYER_IN_ROOM   BIT(22)	// modifies some triggers to "only with players in the room"
 #define VTRIG_REBOOT           BIT(23)	// after the mud reboots
+#define VTRIG_BUY              BIT(24)	// attempting a purchase in the room
+#define VTRIG_KILL             BIT(25)	// vehicle killed someone
 
 
-/* wld trigger types */
+// WTRIG_x: wld trigger types
 #define WTRIG_GLOBAL           BIT(0)      /* check even if zone empty   */
 #define WTRIG_RANDOM           BIT(1)	     /* checked randomly           */
 #define WTRIG_COMMAND          BIT(2)	     /* character types a command  */
@@ -129,6 +135,8 @@
 #define WTRIG_FINISH_QUEST     BIT(21)	// player tries to end a quest
 #define WTRIG_PLAYER_IN_ROOM   BIT(22)	// modifies some triggers to "only with players in the room"
 #define WTRIG_REBOOT           BIT(23)	// after the mud reboots
+#define WTRIG_BUY              BIT(24)	// attempting a purchase
+// unused 25: rooms cannot kill
 
 
 // list of global trigger types (for random_triggers linked list)
@@ -149,6 +157,10 @@
 #define OCMD_READ  4
 #define OCMD_BUILD  5
 #define OCMD_CRAFT  6
+#define OCMD_SHOOT  7
+#define OCMD_POISON  8
+#define OCMD_PAINT  9
+#define OCMD_LIGHT  10
 
 #define TRIG_NEW                0	     /* trigger starts from top  */
 #define TRIG_RESTART            1	     /* trigger restarting       */
@@ -160,6 +172,13 @@
 // used for command triggers
 #define CMDTRG_EXACT  0
 #define CMDTRG_ABBREV  1
+
+
+// for drop triggers: which command dropped it
+#define DROP_TRIG_DROP  0
+#define DROP_TRIG_JUNK  1
+#define DROP_TRIG_SACRIFICE  2
+#define DROP_TRIG_PUT  3
 
 
 /* one line of the trigger */
@@ -201,6 +220,8 @@ struct trig_data {
 	
 	struct trig_data *prev_in_random_triggers;	// DLL: random_triggers
 	struct trig_data *next_in_random_triggers;	// DLL: random_triggers
+	
+	struct trig_data *next_to_free;	// LL: free_trigger_list
 	
 	UT_hash_handle hh;	// trigger_table hash handle
 };
@@ -245,10 +266,10 @@ int greet_mtrigger(char_data *actor, int dir);
 int entry_mtrigger(char_data *ch);
 void entry_memory_mtrigger(char_data *ch);
 int enter_wtrigger(room_data *room, char_data *actor, int dir);
-int drop_otrigger(obj_data *obj, char_data *actor);
+int drop_otrigger(obj_data *obj, char_data *actor, int mode);
 int timer_otrigger(obj_data *obj);
 int get_otrigger(obj_data *obj, char_data *actor);
-int drop_wtrigger(obj_data *obj, char_data *actor);
+int drop_wtrigger(obj_data *obj, char_data *actor, int mode);
 int give_otrigger(obj_data *obj, char_data *actor, char_data *victim);
 int receive_mtrigger(char_data *ch, char_data *actor, obj_data *obj);
 int wear_otrigger(obj_data *obj, char_data *actor, int where);
@@ -256,11 +277,12 @@ int remove_otrigger(obj_data *obj, char_data *actor);
 int command_mtrigger(char_data *actor, char *cmd, char *argument, int mode);
 int command_otrigger(char_data *actor, char *cmd, char *argument, int mode);
 int command_wtrigger(char_data *actor, char *cmd, char *argument, int mode);
+bool check_buy_trigger(char_data *actor, char_data *shopkeeper, obj_data *buying, int cost, any_vnum currency);
 bool check_command_trigger(char_data *actor, char *cmd, char *argument, int mode);
 int death_mtrigger(char_data *ch, char_data *actor);
 void fight_mtrigger(char_data *ch);
 void hitprcnt_mtrigger(char_data *ch);
-void bribe_mtrigger(char_data *ch, char_data *actor, int amount);
+int bribe_mtrigger(char_data *ch, char_data *actor, int amount);
 
 void complete_wtrigger(room_data *room);
 extern int dismantle_wtrigger(room_data *room, char_data *actor, bool preventable);
@@ -282,9 +304,11 @@ int leave_otrigger(room_data *room, char_data *actor, int dir);
 int door_mtrigger(char_data *actor, int subcmd, int dir);
 int door_wtrigger(char_data *actor, int subcmd, int dir);
 
-int consume_otrigger(obj_data *obj, char_data *actor, int cmd);
+int consume_otrigger(obj_data *obj, char_data *actor, int cmd, char_data *target);
 
 int finish_otrigger(obj_data *obj, char_data *actor);
+
+extern int run_kill_triggers(char_data *dying, char_data *killer, vehicle_data *veh_killer);
 
 int command_vtrigger(char_data *actor, char *cmd, char *argument, int mode);
 int destroy_vtrigger(vehicle_data *veh);
@@ -322,12 +346,12 @@ extern trig_data *real_trigger(trig_vnum vnum);
 void extract_script(void *thing, int type);
 void extract_script_mem(struct script_memory *sc);
 void free_proto_scripts(struct trig_proto_list **list);
-void free_script(void *thing, int type);
 void free_trigger(trig_data *trig);
 extern struct trig_proto_list *copy_trig_protos(struct trig_proto_list *list);
 void copy_script(void *source, void *dest, int type);
 void trig_data_copy(trig_data *this_data, const trig_data *trg);
 
+extern bool has_trigger(struct script_data *sc, any_vnum vnum);
 trig_data *read_trigger(int nr);
 void add_var(struct trig_var_data **var_list, char *name, char *value, int id);
 room_data *dg_room_of_obj(obj_data *obj);
@@ -336,7 +360,8 @@ void do_dg_affect(void *go, struct script_data *sc, trig_data *trig, int type, c
 void do_dg_affect_room(void *go, struct script_data *sc, trig_data *trig, int type, char *cmd);
 void dg_purge_instance(void *owner, struct instance_data *inst, char *argument);
 void script_damage(char_data *vict, char_data *killer, int level, int dam_type, double modifier);
-void script_damage_over_time(char_data *vict, int level, int dam_type, double modifier, int dur_seconds, int max_stacks, char_data *cast_by);
+void script_damage_over_time(char_data *vict, any_vnum atype, int level, int dam_type, double modifier, int dur_seconds, int max_stacks, char_data *cast_by);
+void script_heal(void *thing, int type, char *argument);
 
 void extract_value(struct script_data *sc, trig_data *trig, char *cmd);
 

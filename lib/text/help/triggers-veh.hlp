@@ -39,6 +39,7 @@ help files for more info):
 &c%echoaround%&0 - Sends a message to all but one target.
 &c%echoneither%&0 - Sends a message to all but two people.
 &c%force%&0 - Forces a person to execute a command.
+&c%heal%&0 - Restores health/move/etc.
 &c%load%&0 - Loads a mob, object, etc.
 &c%morph%&0 - Causes a person to morph.
 &c%own%&0 - Changes ownership on something.
@@ -71,6 +72,8 @@ Vehicles can trigger on the following events:
 &cFinish-Quest&0 - Triggers when a player tries to turn in a quest.
 &cPlayer-in-Room&0 - Modifier: trigger requires a player present.
 &cReboot&0 - Triggers when the mud starts up.
+&cBuy&0 - Triggers when someone tries to buy in the room.
+&cKill&0 - Triggers when the vehicle kills someone.
 
 For each type, there is a help file named &yVTRIG <type>&0.
 #d
@@ -96,6 +99,7 @@ When using field  - The variable returns:
 &charness(mob)&0 - Harnesses a mob to the vehicle (or loads and harnesses one if
    you give a vnum instead of a mob).
 &chas_in(str)&0 - True if an object with a given name/vnum is inside.
+&chas_trigger(vnum)&0 - Has the specified trigger attached.
 &chealth&0 - Current health of the vehicle.
 &cid&0 - The id number of the vehicle.
 &cin_on&0 - "in" or "on" depending on how characters sit in/on the vehicle.

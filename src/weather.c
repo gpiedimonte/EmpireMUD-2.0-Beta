@@ -212,13 +212,6 @@ void weather_change(void) {
 
 #define NUM_OF_MOONS		1
 
-#define MOON_PHASE_NEW				0	/*								*/
-#define MOON_PHASE_WAXING			1	/*								*/
-#define MOON_PHASE_FIRST_QUARTER	2	/*  Phases of the moon			*/
-#define MOON_PHASE_FULL				3	/*								*/
-#define MOON_PHASE_LAST_QUARTER		4	/*								*/
-#define MOON_PHASE_WANING			5	/*								*/
-
 struct moon_data {
 	char *name;
 	byte cycle;			/* Days between full moons */
@@ -227,12 +220,12 @@ struct moon_data {
 };
 
 enum MOON_PHASE {
-    MOON_PHASE_NEW = 0,
+    PHASE_NEW = 0,
     PHASE_WAXING = 1,
-    FIRST_QUARTER = 2,
-    FULL = 3,
-    LAST_QUARTER = 4,
-    WANING = 5
+    PHASE_FIRST_QUARTER = 2,
+    PHASE_FULL = 3,
+    PHASE_LAST_QUARTER = 4,
+    PHASE_WANING = 5
 };
 
 
@@ -249,17 +242,17 @@ byte get_moon_phase(int M) {
 	diff = 100 * total_time / moons[M].cycle;		/* diff is a percentage of the rotation */
 
 	if (diff <= 2 || diff >= 98)
-		return MOON_PHASE_NEW;
+		return PHASE_NEW;
 	if (diff >= 23 && diff <= 27)
-		return MOON_PHASE_FIRST_QUARTER;
+		return PHASE_FIRST_QUARTER;
 	if (diff >= 73 && diff <= 77)
-		return MOON_PHASE_LAST_QUARTER;
+		return PHASE_LAST_QUARTER;
 	if (diff >= 48 && diff <= 52)
-		return MOON_PHASE_FULL;
+		return PHASE_FULL;
 	if (diff < 50)
-		return MOON_PHASE_WAXING;
+		return PHASE_WAXING;
 	else
-		return MOON_PHASE_WANING;
+		return PHASE_WANING;
 }
 
 
@@ -275,11 +268,11 @@ void list_moons_to_char(char_data *ch) {
 	for (M = 0; M < NUM_OF_MOONS; M++) {
 		*moon_str = '\0';
 		switch(get_moon_phase(M)) {
-			case MOON_PHASE_WAXING:			sprintf(moon_str, "waxing");				break;
-			case MOON_PHASE_FIRST_QUARTER:	sprintf(moon_str, "in its first quarter");	break;
-			case MOON_PHASE_FULL:			sprintf(moon_str, "full");					break;
-			case MOON_PHASE_LAST_QUARTER:	sprintf(moon_str, "in its last quarter");	break;
-			case MOON_PHASE_WANING:			sprintf(moon_str, "waning");				break;
+			case PHASE_WAXING:			sprintf(moon_str, "waxing");				break;
+			case PHASE_FIRST_QUARTER:	sprintf(moon_str, "in its first quarter");	break;
+			case PHASE_FULL:			sprintf(moon_str, "full");					break;
+			case PHASE_LAST_QUARTER:	sprintf(moon_str, "in its last quarter");	break;
+			case PHASE_WANING:			sprintf(moon_str, "waning");				break;
 		}
 		if (*buf)
 			strcat(buf, ", ");
@@ -295,13 +288,13 @@ void list_moons_to_char(char_data *ch) {
 	/* This will find the last comma and replace it with an "and" */
 	for (i = strlen(buf)-1; i > 0; i--)
 		if (buf[i] == ',') {
-			sprintf(buf1, buf + i+1);
+			sprintf(buf1, "%s", buf + i+1);
 			buf[i] = '\0';
 			strcat(buf, " and");
 			strcat(buf, buf1);
 			break;
 		}
-	msg_to_char(ch, buf);
+	send_to_char(buf, ch);
 }
 
 
@@ -310,11 +303,11 @@ byte distance_can_see(char_data *ch) {
 
 	for (M = 0; M < NUM_OF_MOONS; M++) {
 		switch (get_moon_phase(M)) {
-			case MOON_PHASE_FULL:			c = 4;		break;
-			case MOON_PHASE_FIRST_QUARTER:
-			case MOON_PHASE_LAST_QUARTER:	c = 3;		break;
-			case MOON_PHASE_WAXING:
-			case MOON_PHASE_WANING:			c = 2;		break;
+			case PHASE_FULL:			c = 4;		break;
+			case PHASE_FIRST_QUARTER:
+			case PHASE_LAST_QUARTER:	c = 3;		break;
+			case PHASE_WAXING:
+			case PHASE_WANING:			c = 2;		break;
 			default:					c = 1;		break;
 		}
 		if (c > a)
@@ -325,7 +318,7 @@ byte distance_can_see(char_data *ch) {
 	p = a + b;
 	p = MIN(5, p);
 
-	if (has_ability(ch, ABIL_BY_MOONLIGHT)) {
+	if (has_player_tech(ch, PTECH_LARGER_LIGHT_RADIUS)) {
 		p += 2;
 	}
 

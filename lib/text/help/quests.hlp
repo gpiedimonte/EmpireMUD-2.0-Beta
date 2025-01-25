@@ -36,6 +36,19 @@ will immediately fail any remaining daily quests in your quest list.
 
 See also: CITY DAILIES
 #
+"EMPIRE PRODUCED TOTALS" "EMPIRE PRODUCTION TOTALS" "EMPIRE HAS PRODUCED" EMPIRE-PRODUCED-OBJECT EMPIRE-PRODUCED-COMPONENT
+
+Quests and progress goals that require "Empire has produced: x# item"
+count the total number the empire has ever gathered/produced rather than the
+amount you currently have in the empire inventory.
+
+This number goes up when you gather or produce the item, for example when you
+chop a tree down or when your workforce saws a tree into lumber. Importing an
+item also counts, but exporting it again will count against the total.
+
+However, it does not count toward this requirement if you pick up an item you
+didn't produce yourself, or if another player gives you an item.
+#
 "QUEST DROP"
 
 Usage:  quest drop <name>
@@ -131,13 +144,18 @@ These basic daily quests can be completed for a little extra bonus experience.
 They can be started from an artisan in the listed building (for example, the
 miller for the mill).
 
-Grain for the Miller (Mill, requires Empire 15)
+Grain for the Miller (Mill)
 Forge Horseshoes (Stable, requires Trade 15)
 Steal a Trinket (Tavern, requires Stealth 15)
 Disenchant Trinkets (Tower of Sorcery, requires High Sorcery 15)
 Deliver a Letter (Pigeon Post, requires Tower of Sorcery, Forge and Alchemist)
+Herbs for the Alchemist (Alchemist, requires Survival 50)
+Flowers for the Alchemist (Alchemist, requires Survival 15-49)
+Fetch a Trophy (Tavern, requires Battle 15)
 
-You can only do these quests in your own empire.
+You can only do these quests in your own empire. You must have the Citizens
+tech (Thriving Community goal) before artisans will move in and start offering
+these quests.
 
 See also: DAILY QUESTS
 #
